@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Android.Widget;
 using Android.Views;
+using Microsoft.Maui.Handlers;
 
 namespace Plugin.Maui.NativeCalendar
 {
-    public partial class NativeCalendarHandler 
+    public partial class NativeCalendarHandler : ViewHandler<NativeCalendarView, NativeCalendarImplementation>
     {
         protected override NativeCalendarImplementation CreatePlatformView() => new NativeCalendarImplementation(Context, VirtualView);
 

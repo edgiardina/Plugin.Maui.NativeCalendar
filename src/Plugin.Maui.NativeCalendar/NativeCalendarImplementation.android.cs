@@ -13,8 +13,16 @@ namespace Plugin.Maui.NativeCalendar
     {
         public NativeCalendarImplementation(Context context, NativeCalendarView nativeCalendarView) : base(context)
         {
-            // Add a calendar view to the layout
             var calendarView = new CalendarView(context);
+
+            // Set layout parameters, e.g., match parent in both dimensions
+            var layoutParams = new CoordinatorLayout.LayoutParams(
+                LayoutParams.MatchParent,
+                LayoutParams.MatchParent
+            );
+
+            // Add the CalendarView to the CoordinatorLayout
+            calendarView.LayoutParameters = layoutParams;
             AddView(calendarView);
         }
     }

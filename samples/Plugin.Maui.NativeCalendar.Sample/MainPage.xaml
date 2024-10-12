@@ -5,5 +5,5 @@
              xmlns:nativecalendar="clr-namespace:Plugin.Maui.NativeCalendar;assembly=Plugin.Maui.NativeCalendar"
              Title="Feature Plugin">
 
-    <nativecalendar:NativeCalendarView />
+    <nativecalendar:NativeCalendarView HeightRequest="400"  />
 </ContentPage>

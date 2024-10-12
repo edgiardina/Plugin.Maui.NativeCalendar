@@ -4,6 +4,8 @@ VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugin.Maui.NativeCalendar.Sample", "Plugin.Maui.NativeCalendar.Sample\Plugin.Maui.NativeCalendar.Sample.csproj", "{E1639C08-ACBE-459C-A30B-68CAFD7F564C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugin.Maui.NativeCalendar", "..\src\Plugin.Maui.NativeCalendar\Plugin.Maui.NativeCalendar.csproj", "{35610E7D-3D3F-4124-AAD2-2D4F6A60802E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -16,6 +18,10 @@ Global
 		{E1639C08-ACBE-459C-A30B-68CAFD7F564C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1639C08-ACBE-459C-A30B-68CAFD7F564C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E1639C08-ACBE-459C-A30B-68CAFD7F564C}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{35610E7D-3D3F-4124-AAD2-2D4F6A60802E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35610E7D-3D3F-4124-AAD2-2D4F6A60802E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35610E7D-3D3F-4124-AAD2-2D4F6A60802E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35610E7D-3D3F-4124-AAD2-2D4F6A60802E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

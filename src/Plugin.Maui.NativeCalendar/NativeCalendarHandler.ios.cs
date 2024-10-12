@@ -8,7 +8,7 @@ using UIKit;
 
 namespace Plugin.Maui.NativeCalendar
 {
-    public partial class NativeCalendarHandler
+    public partial class NativeCalendarHandler : ViewHandler<NativeCalendarView, NativeCalendarImplementation>
     {
         protected override NativeCalendarImplementation CreatePlatformView() => new NativeCalendarImplementation(VirtualView);
 
