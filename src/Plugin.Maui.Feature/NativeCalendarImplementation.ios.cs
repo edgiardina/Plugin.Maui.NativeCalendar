@@ -11,7 +11,12 @@ namespace Plugin.Maui.NativeCalendar
     {
         public NativeCalendarImplementation(NativeCalendarView nativeCalendarHandler)
         {
-            
+            // only add a calendar on iOS 16.0 or later
+            if (UIDevice.CurrentDevice.CheckSystemVersion(16, 0))
+            {
+                var calendarView = new UICalendarView();
+                AddSubview(calendarView);
+            }            
         }
     }
 }
