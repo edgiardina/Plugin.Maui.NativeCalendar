@@ -8,6 +8,7 @@ public partial class MainPage : ContentPage
 
 	public MainPage()
 	{
+        InitializeComponent();
         //var calendarView = new NativeCalendarView();
         //Content = calendarView;
     }
