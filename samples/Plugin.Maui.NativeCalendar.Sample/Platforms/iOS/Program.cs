@@ -1,7 +1,7 @@
 ﻿using ObjCRuntime;
 using UIKit;
 
-namespace Plugin.Maui.Feature.Sample;
+namespace Plugin.Maui.NativeCalendar.Sample;
 
 public class Program
 {

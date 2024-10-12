@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Plugin.Maui.Feature;
+using Plugin.Maui.NativeCalendar;
 
-namespace Plugin.Maui.Feature.Sample;
+namespace Plugin.Maui.NativeCalendar.Sample;
 
 public static class MauiProgram
 {
@@ -17,7 +17,6 @@ public static class MauiProgram
 			});
 
 		builder.Services.AddTransient<MainPage>();
-		builder.Services.AddSingleton<IFeature>(Feature.Default);
 
 		return builder.Build();
 	}

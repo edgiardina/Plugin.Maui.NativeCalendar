@@ -2,7 +2,7 @@
 using Microsoft.Maui;
 using Microsoft.Maui.Hosting;
 
-namespace Plugin.Maui.Feature.Sample;
+namespace Plugin.Maui.NativeCalendar.Sample;
 
 class Program : MauiApplication
 {
