@@ -12,8 +12,8 @@ namespace Plugin.Maui.NativeCalendar
     {
         private readonly UICalendarView calendarView;
 
-        private NSDate MaxDate { get; set; } 
-        private NSDate MinDate { get; set; }    
+        private NSDate MaxDate { get; set; } = NSDate.DistantFuture;
+        private NSDate MinDate { get; set; } = NSDate.DistantPast;
 
         public NativeCalendarImplementation(NativeCalendarView nativeCalendarHandler)
         {
@@ -21,11 +21,24 @@ namespace Plugin.Maui.NativeCalendar
             if (UIDevice.CurrentDevice.CheckSystemVersion(16, 0))
             {
                 calendarView = new UICalendarView();
-                calendarView.SelectionBehavior = new UICalendarSelectionSingleDate();
+                calendarView.Calendar = new NSCalendar(NSCalendarType.Gregorian);
+                calendarView.SelectionBehavior = new UICalendarSelectionSingleDate();     
 
+                // Enable Auto Layout
+                calendarView.TranslatesAutoresizingMaskIntoConstraints = false;
 
                 AddSubview(calendarView);
-            }         
+
+                // Set constraints to fill the parent view
+                NSLayoutConstraint.ActivateConstraints(new[]
+                {
+                    calendarView.LeadingAnchor.ConstraintEqualTo(this.LeadingAnchor),
+                    calendarView.TrailingAnchor.ConstraintEqualTo(this.TrailingAnchor),
+                    calendarView.TopAnchor.ConstraintEqualTo(this.TopAnchor),
+                    calendarView.BottomAnchor.ConstraintEqualTo(this.BottomAnchor)
+                });
+
+            }
             else
             {
                 throw new Exception("iOS 16.0 or later is required to use the NativeCalendarView");
