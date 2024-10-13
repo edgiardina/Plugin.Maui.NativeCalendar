@@ -26,6 +26,12 @@ namespace Plugin.Maui.NativeCalendar
             // Add the CalendarView to the CoordinatorLayout
             calendarView.LayoutParameters = layoutParams;
             AddView(calendarView);
+
+        }
+
+        public void UpdateSelectedDate(NativeCalendarView nativeCalendarView)
+        {
+            calendarView.Date = new DateTimeOffset(nativeCalendarView.SelectedDate).ToUnixTimeMilliseconds();
         }
 
         public void UpdateMaximumDate(NativeCalendarView nativeCalendarView)
@@ -35,20 +41,8 @@ namespace Plugin.Maui.NativeCalendar
 
         public void UpdateMinimumDate(NativeCalendarView nativeCalendarView)
         {
-            calendarView.MinDate = new DateTimeOffset(nativeCalendarView.MinimumDate).ToUnixTimeMilliseconds();
+            calendarView.MinDate = new DateTimeOffset(nativeCalendarView.MinimumDate).ToUnixTimeMilliseconds(); 
         }
 
-        protected override void OnLayout(bool changed, int left, int top, int right, int bottom)
-        {
-            base.OnLayout(changed, left, top, right, bottom);
-
-            // Now you can safely interact with the CalendarView
-            // This ensures the view is fully measured before accessing properties
-            if (calendarView != null)
-            {
-                // Access CalendarView's methods safely here
-                Console.WriteLine("CalendarView layout completed.");
-            }
-        }
     }
 }

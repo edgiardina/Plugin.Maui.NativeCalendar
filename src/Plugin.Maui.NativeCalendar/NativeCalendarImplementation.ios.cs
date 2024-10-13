@@ -21,11 +21,33 @@ namespace Plugin.Maui.NativeCalendar
             if (UIDevice.CurrentDevice.CheckSystemVersion(16, 0))
             {
                 calendarView = new UICalendarView();
+                calendarView.SelectionBehavior = new UICalendarSelectionSingleDate();
+
+
                 AddSubview(calendarView);
             }         
             else
             {
                 throw new Exception("iOS 16.0 or later is required to use the NativeCalendarView");
+            }
+        }
+
+        public void UpdateSelectedDate(NativeCalendarView nativeCalendarView)
+        {
+            // Create NSDateComponents from the DateTime
+            var dateTime = nativeCalendarView.SelectedDate;
+
+            NSDateComponents dateComponents = new NSDateComponents
+            {
+                Year = dateTime.Year,
+                Month = dateTime.Month,
+                Day = dateTime.Day
+            };
+
+            // Cast to UICalendarSelectionSingleDate and set the SelectedDate
+            if (calendarView.SelectionBehavior is UICalendarSelectionSingleDate singleDateSelection)
+            {
+                singleDateSelection.SelectedDate = dateComponents;
             }
         }
 

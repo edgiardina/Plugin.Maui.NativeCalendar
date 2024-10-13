@@ -16,10 +16,14 @@ namespace Plugin.Maui.NativeCalendar.Sample
         [ObservableProperty]
         private DateTime minimumDate;
 
+        [ObservableProperty]
+        private DateTime selectedDate;  
+
         public MainPageViewModel()
         {
             maximumDate = DateTime.Now.AddYears(1);
             minimumDate = DateTime.Now.AddYears(-1);
+            selectedDate = DateTime.Now.AddDays(1);
 
 
         }

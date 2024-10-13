@@ -5,6 +5,8 @@
              xmlns:nativecalendar="clr-namespace:Plugin.Maui.NativeCalendar;assembly=Plugin.Maui.NativeCalendar"
              Title="Native Calendar Plugin">
     <StackLayout Padding="10">
-        <nativecalendar:NativeCalendarView MaximumDate="{Binding MaximumDate}" MinimumDate="{Binding MinimumDate}" />
+        <nativecalendar:NativeCalendarView MaximumDate="{Binding MaximumDate}"
+                                           MinimumDate="{Binding MinimumDate}"
+                                           SelectedDate="{Binding SelectedDate}" />
     </StackLayout>
 </ContentPage>

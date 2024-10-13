@@ -12,7 +12,8 @@ namespace Plugin.Maui.NativeCalendar
         public static IPropertyMapper<NativeCalendarView, NativeCalendarHandler> PropertyMapper = new PropertyMapper<NativeCalendarView, NativeCalendarHandler>(ViewHandler.ViewMapper)
         {
             [nameof(NativeCalendarView.MaximumDate)] = MapMaximumDate,
-            [nameof(NativeCalendarView.MinimumDate)] = MapMinimumDate
+            [nameof(NativeCalendarView.MinimumDate)] = MapMinimumDate,
+            [nameof(NativeCalendarView.SelectedDate)] = MapSelectedDate
         };
 
         public static CommandMapper<NativeCalendarView, NativeCalendarHandler> CommandMapper = new(ViewCommandMapper)
@@ -25,6 +26,11 @@ namespace Plugin.Maui.NativeCalendar
 
         public NativeCalendarHandler() : base(PropertyMapper, CommandMapper)
         {
+        }
+
+        public static void MapSelectedDate(NativeCalendarHandler handler, NativeCalendarView view)
+        {
+            handler.PlatformView?.UpdateSelectedDate(view);
         }
 
         public static void MapMaximumDate(NativeCalendarHandler handler, NativeCalendarView view)
