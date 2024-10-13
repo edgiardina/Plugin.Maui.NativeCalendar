@@ -19,9 +19,9 @@ namespace Plugin.Maui.NativeCalendar.Sample
         public MainPageViewModel()
         {
             maximumDate = DateTime.Now.AddYears(1);
+            minimumDate = DateTime.Now.AddYears(-1);
 
 
-            
         }
 
     }
