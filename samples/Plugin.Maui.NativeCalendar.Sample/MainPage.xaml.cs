@@ -6,10 +6,9 @@ namespace Plugin.Maui.NativeCalendar.Sample;
 public partial class MainPage : ContentPage
 {
 
-	public MainPage()
+	public MainPage(MainPageViewModel mainPageViewModel)
 	{
         InitializeComponent();
-        //var calendarView = new NativeCalendarView();
-        //Content = calendarView;
+        this.BindingContext = mainPageViewModel;
     }
 }
