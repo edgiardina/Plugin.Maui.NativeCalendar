@@ -6,11 +6,13 @@ namespace Plugin.Maui.NativeCalendar.iOS
     public class CalendarViewDelegate : NSObject, IUICalendarViewDelegate
     {
         private readonly List<NativeCalendarEvent> events;
+        private readonly UIColor eventIndicatorColor;
 
-        public CalendarViewDelegate(List<NativeCalendarEvent> events)
+        public CalendarViewDelegate(List<NativeCalendarEvent> events, UIColor eventIndicatorColor)
         {
             // List of calendar events
             this.events = events;
+            this.eventIndicatorColor = eventIndicatorColor;
         }
 
         // Decoration method for UICalendarView
@@ -26,7 +28,7 @@ namespace Plugin.Maui.NativeCalendar.iOS
             }
             else
             {
-                return new UICalendarViewDecoration();
+                return UICalendarViewDecoration.Create(eventIndicatorColor, UICalendarViewDecorationSize.Medium);
             }
         }
 

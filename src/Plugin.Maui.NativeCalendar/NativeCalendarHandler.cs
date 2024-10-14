@@ -14,7 +14,8 @@ namespace Plugin.Maui.NativeCalendar
             [nameof(NativeCalendarView.MaximumDate)] = MapMaximumDate,
             [nameof(NativeCalendarView.MinimumDate)] = MapMinimumDate,
             [nameof(NativeCalendarView.SelectedDate)] = MapSelectedDate,
-            [nameof(NativeCalendarView.Events)] = MapEvents
+            [nameof(NativeCalendarView.Events)] = MapEvents,
+            [nameof(NativeCalendarView.EventIndicatorColor)] = MapEventIndicatorColor
         };
 
         public static CommandMapper<NativeCalendarView, NativeCalendarHandler> CommandMapper = new(ViewCommandMapper)
@@ -44,6 +45,11 @@ namespace Plugin.Maui.NativeCalendar
             handler.PlatformView?.UpdateMinimumDate(view);
         }
         public static void MapEvents(NativeCalendarHandler handler, NativeCalendarView view)
+        {
+            handler.PlatformView?.UpdateEvents(view);
+        }
+
+        public static void MapEventIndicatorColor(NativeCalendarHandler handler, NativeCalendarView view)
         {
             handler.PlatformView?.UpdateEvents(view);
         }

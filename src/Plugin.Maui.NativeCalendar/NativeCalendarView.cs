@@ -65,6 +65,20 @@ namespace Plugin.Maui.NativeCalendar
             set => SetValue(MinimumDateProperty, value);
         }
 
+        public static readonly BindableProperty EventIndicatorColorProperty = BindableProperty.Create(
+            propertyName: nameof(EventIndicatorColor),
+            returnType: typeof(Color),
+            declaringType: typeof(NativeCalendarView),
+            defaultValue: Colors.Blue,
+            defaultBindingMode: BindingMode.TwoWay
+        );
+
+        public Color EventIndicatorColor
+        {
+            get => (Color)GetValue(EventIndicatorColorProperty);
+            set => SetValue(EventIndicatorColorProperty, value);
+        }
+
 
 
         public event EventHandler<DateChangedEventArgs> DateChanged;

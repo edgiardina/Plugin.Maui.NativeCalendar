@@ -1,6 +1,7 @@
 ﻿using CoreGraphics;
 using Foundation;
 using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Platform;
 using Plugin.Maui.NativeCalendar.iOS;
 using System;
 using System.Collections.Generic;
@@ -48,7 +49,7 @@ namespace Plugin.Maui.NativeCalendar
                 });
 
                 // Set the delegate for calendarView
-                var calendarDelegate = new CalendarViewDelegate(nativeCalendarView.Events);
+                var calendarDelegate = new CalendarViewDelegate(nativeCalendarView.Events, nativeCalendarView.EventIndicatorColor.ToPlatform());
                 calendarView.Delegate = calendarDelegate;
 
             }
@@ -98,8 +99,11 @@ namespace Plugin.Maui.NativeCalendar
         public void UpdateEvents(NativeCalendarView nativeCalendarView)
         {
             // TODO: is this enough?
-            //calendarView.ReloadDecorations()         
+            calendarView.Delegate = new CalendarViewDelegate(nativeCalendarView.Events, nativeCalendarView.EventIndicatorColor.ToPlatform());
 
+            // Trigger a layout update to redraw the decorations
+            calendarView.SetNeedsLayout();
+            calendarView.LayoutIfNeeded();
         }
 
     }

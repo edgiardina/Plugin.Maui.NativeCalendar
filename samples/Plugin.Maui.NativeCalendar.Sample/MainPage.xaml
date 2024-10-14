@@ -9,6 +9,10 @@
                                            MinimumDate="{Binding MinimumDate}"
                                            SelectedDate="{Binding SelectedDate}"
                                            Events="{Binding Events}"
-                                           HeightRequest="400" />
+                                           EventIndicatorColor="{Binding EventIndicatorColor}"
+                                           HeightRequest="500" />
+
+        <Button Text="Change Events"
+                Command="{Binding ChangeEventsCommand}"/>
     </StackLayout>
 </ContentPage>

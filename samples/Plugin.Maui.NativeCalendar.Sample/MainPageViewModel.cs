@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,13 +21,19 @@ namespace Plugin.Maui.NativeCalendar.Sample
         private DateTime selectedDate;
 
         [ObservableProperty]
+        private Color eventIndicatorColor;
+
+        [ObservableProperty]
         private List<NativeCalendarEvent> events;
+
+        private Random random = new Random();
 
         public MainPageViewModel()
         {
             maximumDate = DateTime.Now.AddYears(1);
             minimumDate = DateTime.Now.AddYears(-1);
             selectedDate = DateTime.Now.AddDays(1);
+            eventIndicatorColor = Colors.Red;
 
             events = new List<NativeCalendarEvent>
             {
@@ -34,7 +41,7 @@ namespace Plugin.Maui.NativeCalendar.Sample
                 {
                     Title = "Event 1",
                     Description = "Description 1",
-                    StartDate = DateTime.Now.AddDays(1),
+                    StartDate = DateTime.Now.AddDays(random.Next(31)),
                     EndDate = DateTime.Now.AddDays(2),
                     Location = "Location 1"
                 },
@@ -42,13 +49,35 @@ namespace Plugin.Maui.NativeCalendar.Sample
                 {
                     Title = "Event 2",
                     Description = "Description 2",
-                    StartDate = DateTime.Now.AddDays(3),
+                    StartDate = DateTime.Now.AddDays(random.Next(31)),
                     EndDate = DateTime.Now.AddDays(4),
                     Location = "Location 2"
                 }
             };
+        }
 
-
+        [RelayCommand]
+        public void ChangeEvents()
+        {
+            events = new List<NativeCalendarEvent>
+            {
+                new NativeCalendarEvent
+                {
+                    Title = "Event 3",
+                    Description = "Description 3",
+                    StartDate = DateTime.Now.AddDays(random.Next(31)),
+                    EndDate = DateTime.Now.AddDays(6),
+                    Location = "Location 3"
+                },
+                new NativeCalendarEvent
+                {
+                    Title = "Event 4",
+                    Description = "Description 4",
+                    StartDate = DateTime.Now.AddDays(random.Next(31)),
+                    EndDate = DateTime.Now.AddDays(8),
+                    Location = "Location 4"
+                }
+            };
         }
 
     }
