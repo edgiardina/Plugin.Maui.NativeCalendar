@@ -8,6 +8,19 @@ namespace Plugin.Maui.NativeCalendar
 {
     public class NativeCalendarView : View
     {
+        public static readonly BindableProperty EventsProperty = BindableProperty.Create(
+            propertyName: nameof(Events),
+            returnType: typeof(List<NativeCalendarEvent>),
+            declaringType: typeof(NativeCalendarView),
+            defaultValue: new List<NativeCalendarEvent>(),
+            defaultBindingMode: BindingMode.TwoWay
+        );
+        public List<NativeCalendarEvent> Events
+        {
+            get => (List<NativeCalendarEvent>)GetValue(EventsProperty);
+            set => SetValue(EventsProperty, value);
+        }
+
         // Selected Date Bindable Property
         public static readonly BindableProperty SelectedDateProperty = BindableProperty.Create(
             propertyName: nameof(SelectedDate),

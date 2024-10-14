@@ -8,6 +8,7 @@
         <nativecalendar:NativeCalendarView MaximumDate="{Binding MaximumDate}"
                                            MinimumDate="{Binding MinimumDate}"
                                            SelectedDate="{Binding SelectedDate}"
+                                           Events="{Binding Events}"
                                            HeightRequest="400" />
     </StackLayout>
 </ContentPage>

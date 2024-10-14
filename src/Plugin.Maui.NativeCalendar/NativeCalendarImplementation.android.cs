@@ -25,7 +25,8 @@ namespace Plugin.Maui.NativeCalendar
 
             // Add the CalendarView to the CoordinatorLayout
             calendarView.LayoutParameters = layoutParams;
-            AddView(calendarView);
+            AddView(calendarView);       
+
 
         }
 
@@ -42,6 +43,11 @@ namespace Plugin.Maui.NativeCalendar
         public void UpdateMinimumDate(NativeCalendarView nativeCalendarView)
         {
             calendarView.MinDate = new DateTimeOffset(nativeCalendarView.MinimumDate).ToUnixTimeMilliseconds(); 
+        }
+
+        public void UpdateEvents(NativeCalendarView nativeCalendarView)
+        {
+            // Update the events
         }
 
     }
