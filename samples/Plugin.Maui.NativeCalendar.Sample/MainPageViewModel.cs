@@ -30,12 +30,12 @@ namespace Plugin.Maui.NativeCalendar.Sample
 
         public MainPageViewModel()
         {
-            maximumDate = DateTime.Now.AddYears(1);
-            minimumDate = DateTime.Now.AddYears(-1);
-            selectedDate = DateTime.Now.AddDays(1);
-            eventIndicatorColor = Colors.Red;
+            MaximumDate = DateTime.Now.AddYears(1);
+            MinimumDate = DateTime.Now.AddYears(-1);
+            SelectedDate = DateTime.Now.AddDays(1);
+            EventIndicatorColor = Colors.Red;
 
-            events = new List<NativeCalendarEvent>
+            Events = new List<NativeCalendarEvent>
             {
                 new NativeCalendarEvent
                 {
@@ -59,7 +59,7 @@ namespace Plugin.Maui.NativeCalendar.Sample
         [RelayCommand]
         public void ChangeEvents()
         {
-            events = new List<NativeCalendarEvent>
+            Events = new List<NativeCalendarEvent>
             {
                 new NativeCalendarEvent
                 {
@@ -78,6 +78,9 @@ namespace Plugin.Maui.NativeCalendar.Sample
                     Location = "Location 4"
                 }
             };
+
+            // Randomize the EventIndicatorColor
+            EventIndicatorColor = Color.FromRgb(random.Next(256), random.Next(256), random.Next(256));
         }
 
     }

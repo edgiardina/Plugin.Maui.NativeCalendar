@@ -98,6 +98,9 @@ namespace Plugin.Maui.NativeCalendar
 
         public void UpdateEvents(NativeCalendarView nativeCalendarView)
         {
+            // Remove and reset the delegate to force a decoration re-evaluation
+            calendarView.Delegate = null;
+
             // TODO: is this enough?
             calendarView.Delegate = new CalendarViewDelegate(nativeCalendarView.Events, nativeCalendarView.EventIndicatorColor.ToPlatform());
 
