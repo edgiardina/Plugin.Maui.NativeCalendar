@@ -10,7 +10,8 @@
                                            SelectedDate="{Binding SelectedDate}"
                                            Events="{Binding Events}"
                                            EventIndicatorColor="{Binding EventIndicatorColor}"
-                                           HeightRequest="500" />
+                                           HeightRequest="500"
+                                           DateChanged="NativeCalendarView_DateChanged" />
 
         <Button Text="Change Events"
                 Command="{Binding ChangeEventsCommand}"/>

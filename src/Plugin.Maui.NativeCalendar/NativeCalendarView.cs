@@ -8,6 +8,8 @@ namespace Plugin.Maui.NativeCalendar
 {
     public class NativeCalendarView : View
     {
+        #region Bindable Properties
+
         public static readonly BindableProperty EventsProperty = BindableProperty.Create(
             propertyName: nameof(Events),
             returnType: typeof(List<NativeCalendarEvent>),
@@ -27,7 +29,14 @@ namespace Plugin.Maui.NativeCalendar
             returnType: typeof(DateTime),
             declaringType: typeof(NativeCalendarView),
             defaultValue: DateTime.Now,
-            defaultBindingMode: BindingMode.TwoWay
+            defaultBindingMode: BindingMode.TwoWay,
+            propertyChanged: (bindable, oldValue, newValue) =>
+            {
+                if (bindable is NativeCalendarView nativeCalendarView)
+                {
+                    nativeCalendarView.DateChanged?.Invoke(nativeCalendarView, new DateChangedEventArgs((DateTime)oldValue, (DateTime)newValue));
+                }
+            }
         );
 
         public DateTime SelectedDate
@@ -79,7 +88,7 @@ namespace Plugin.Maui.NativeCalendar
             set => SetValue(EventIndicatorColorProperty, value);
         }
 
-
+        #endregion
 
         public event EventHandler<DateChangedEventArgs> DateChanged;
     }

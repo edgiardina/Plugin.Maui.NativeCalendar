@@ -25,6 +25,8 @@ namespace Plugin.Maui.NativeCalendar
 
         private List<UIView> eventIndicators = new List<UIView>();
 
+        private readonly CalendarSelectionSingleDateDelegate calendarSelectionSingleDateDelegate;
+
         public NativeCalendarImplementation(NativeCalendarView nativeCalendarView)
         {
             // only add a calendar on iOS 16.0 or later
@@ -32,7 +34,10 @@ namespace Plugin.Maui.NativeCalendar
             {
                 calendarView = new UICalendarView();
                 calendarView.Calendar = new NSCalendar(NSCalendarType.Gregorian);
-                calendarView.SelectionBehavior = new UICalendarSelectionSingleDate();
+
+                calendarSelectionSingleDateDelegate = new CalendarSelectionSingleDateDelegate(nativeCalendarView);
+
+                calendarView.SelectionBehavior = new UICalendarSelectionSingleDate(calendarSelectionSingleDateDelegate);
 
                 // Enable Auto Layout
                 calendarView.TranslatesAutoresizingMaskIntoConstraints = false;
@@ -49,8 +54,7 @@ namespace Plugin.Maui.NativeCalendar
                 });
 
                 // Set the delegate for calendarView
-                var calendarDelegate = new CalendarViewDelegate(nativeCalendarView.Events, nativeCalendarView.EventIndicatorColor.ToPlatform());
-                calendarView.Delegate = calendarDelegate;
+                calendarView.Delegate = new CalendarViewDelegate(nativeCalendarView.Events, nativeCalendarView.EventIndicatorColor.ToPlatform());
 
             }
             else
