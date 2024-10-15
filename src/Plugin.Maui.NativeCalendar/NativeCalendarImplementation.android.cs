@@ -12,9 +12,12 @@ namespace Plugin.Maui.NativeCalendar
     public class NativeCalendarImplementation : FrameLayout
     {
         private readonly CalendarView calendarView;
+        private readonly NativeCalendarView nativeCalendarView;
 
         public NativeCalendarImplementation(Context context, NativeCalendarView nativeCalendarView) : base(context)
         {
+            this.nativeCalendarView = nativeCalendarView;
+
             calendarView = new CalendarView(context);
 
             // Set layout parameters, e.g., match parent in both dimensions
@@ -25,9 +28,14 @@ namespace Plugin.Maui.NativeCalendar
 
             // Add the CalendarView to the CoordinatorLayout
             calendarView.LayoutParameters = layoutParams;
-            AddView(calendarView);       
+            AddView(calendarView);
 
+            calendarView.DateChange += CalendarView_DateChange;
+        }
 
+        private void CalendarView_DateChange(object? sender, CalendarView.DateChangeEventArgs e)
+        {
+            nativeCalendarView.SelectedDate = new DateTime(e.Year, e.Month + 1, e.DayOfMonth);
         }
 
         public void UpdateSelectedDate(NativeCalendarView nativeCalendarView)
