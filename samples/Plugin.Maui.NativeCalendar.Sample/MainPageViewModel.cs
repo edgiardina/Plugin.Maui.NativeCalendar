@@ -83,5 +83,11 @@ namespace Plugin.Maui.NativeCalendar.Sample
             EventIndicatorColor = Color.FromRgb(random.Next(256), random.Next(256), random.Next(256));
         }
 
+        [RelayCommand]
+        public void DateChanged(DateChangedEventArgs dateChangedEventArgs)
+        {
+            Console.WriteLine($"Selected Date: {dateChangedEventArgs.NewDate}");
+        }
+
     }
 }

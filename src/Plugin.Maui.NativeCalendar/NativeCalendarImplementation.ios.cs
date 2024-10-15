@@ -19,11 +19,7 @@ namespace Plugin.Maui.NativeCalendar
         private NSDate MaxDate { get; set; } = NSDate.DistantFuture;
         private NSDate MinDate { get; set; } = NSDate.DistantPast;
 
-        private bool isLayoutInitialized = false;
-
         private NativeCalendarView nativeCalendarView;
-
-        private List<UIView> eventIndicators = new List<UIView>();
 
         private readonly CalendarSelectionSingleDateDelegate calendarSelectionSingleDateDelegate;
 

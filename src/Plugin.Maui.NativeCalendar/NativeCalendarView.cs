@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Plugin.Maui.NativeCalendar
 {
@@ -35,6 +36,7 @@ namespace Plugin.Maui.NativeCalendar
                 if (bindable is NativeCalendarView nativeCalendarView)
                 {
                     nativeCalendarView.DateChanged?.Invoke(nativeCalendarView, new DateChangedEventArgs((DateTime)oldValue, (DateTime)newValue));
+                    nativeCalendarView.DateChangedCommand?.Execute(new DateChangedEventArgs((DateTime)oldValue, (DateTime)newValue));
                 }
             }
         );
@@ -88,7 +90,22 @@ namespace Plugin.Maui.NativeCalendar
             set => SetValue(EventIndicatorColorProperty, value);
         }
 
+        public static readonly BindableProperty DateChangedCommandProperty = BindableProperty.Create(
+            propertyName: nameof(DateChangedCommand),
+            returnType: typeof(ICommand),
+            declaringType: typeof(NativeCalendarView),
+            defaultValue: null
+        );
+
+        public ICommand DateChangedCommand
+        {
+            get => (ICommand)GetValue(DateChangedCommandProperty);
+            set => SetValue(DateChangedCommandProperty, value);
+        }
+
         #endregion
+
+
 
         public event EventHandler<DateChangedEventArgs> DateChanged;
     }

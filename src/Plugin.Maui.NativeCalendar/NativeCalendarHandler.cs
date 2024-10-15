@@ -20,10 +20,7 @@ namespace Plugin.Maui.NativeCalendar
 
         public static CommandMapper<NativeCalendarView, NativeCalendarHandler> CommandMapper = new(ViewCommandMapper)
         {
-            //[nameof(Video.UpdateStatus)] = MapUpdateStatus,
-            //[nameof(Video.PlayRequested)] = MapPlayRequested,
-            //[nameof(Video.PauseRequested)] = MapPauseRequested,
-            //[nameof(Video.StopRequested)] = MapStopRequested
+            [nameof(NativeCalendarView.DateChangedCommand)] = MapDateChangedCommand
         };
 
         public NativeCalendarHandler() : base(PropertyMapper, CommandMapper)
@@ -53,6 +50,12 @@ namespace Plugin.Maui.NativeCalendar
         {
             handler.PlatformView?.UpdateEvents(view);
         }
+
+        private static void MapDateChangedCommand(NativeCalendarHandler handler, NativeCalendarView view, object? args)
+        {
+            // no-op
+        }
+
 
 
     }
