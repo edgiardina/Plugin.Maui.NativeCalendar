@@ -72,6 +72,12 @@
 		<Compile Remove="**\*.net.cs" />
 		<None Include="**\*.net.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
 	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="Droid\Resources\layout\test.xml" />
+	</ItemGroup>
+	<ItemGroup>
+	  <AndroidResource Include="Droid\Resources\layout\test.xml" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
@@ -89,9 +95,6 @@
 	<!-- Only reference the binding library when on Android-->
 	<ItemGroup Condition="$(TargetFramework.Contains('-android')) == true">
 	  <ProjectReference Include="..\MaterialCalendarView.Binding\MaterialCalendarView.Binding.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Droid\" />
 	</ItemGroup>
 
 </Project>

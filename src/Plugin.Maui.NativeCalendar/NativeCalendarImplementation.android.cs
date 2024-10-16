@@ -3,13 +3,9 @@ using Android.Graphics.Drawables.Shapes;
 using Android.Widget;
 using AndroidX.CoordinatorLayout.Widget;
 using Com.Applandeo.Materialcalendarview;
-using Com.Applandeo.Materialcalendarview.Listeners;
-using Java.Interop;
-using Java.Lang;
 using Java.Util;
 using Microsoft.Maui.Platform;
-using static Android.Provider.CalendarContract;
-using static Plugin.Maui.NativeCalendar.NativeCalendarImplementation;
+using System.Xml;
 using MaterialCalendar = Com.Applandeo.Materialcalendarview;
 
 namespace Plugin.Maui.NativeCalendar
@@ -23,10 +19,16 @@ namespace Plugin.Maui.NativeCalendar
         {
             this.nativeCalendarView = nativeCalendarView;
 
-            int selectionMode = MaterialCalendar.CalendarView.OneDayPicker;            
+            int selectionMode = MaterialCalendar.CalendarView.OneDayPicker;
 
-            // set to single selection?
-            //calendarView.SetSelectionMode(MaterialCalendarView.SelectionMode.Single);
+            // set to single selection
+            // unfortunately, MaterialCalendarView's selection mode is not available in code, you have to declare it as an XML property
+            // https://github.com/dotnet/runtime/issues/102300
+            XmlReader xmlResource = this.Resources.GetXml(Resource.Layout.test);
+            xmlResource.Read();
+            Android.Util.IAttributeSet attributes = Android.Util.Xml.AsAttributeSet(xmlResource);
+
+            calendarView = new MaterialCalendar.CalendarView(context, attributes);
 
             // Set layout parameters, e.g., match parent in both dimensions
             var layoutParams = new CoordinatorLayout.LayoutParams(
@@ -38,16 +40,13 @@ namespace Plugin.Maui.NativeCalendar
             calendarView.LayoutParameters = layoutParams;
             AddView(calendarView);
 
-            // TODO set event handler when date is changed
+            // Set event handler when date is changed
             calendarView.SetOnCalendarDayClickListener(new OnCalendarDayClickListener(calendarView, nativeCalendarView));
-     
-            //calendarView.DateChange += CalendarView_DateChange;
-        }
 
-        //private void CalendarView_DateChange(object? sender, CalendarView.DateChangeEventArgs e)
-        //{
-        //    nativeCalendarView.SelectedDate = new DateTime(e.Year, e.Month + 1, e.DayOfMonth);
-        //}
+            calendarView.SetHeaderColor(Android.Graphics.Color.Transparent);
+            calendarView.SetBackgroundColor(Android.Graphics.Color.Transparent);
+
+        }
 
         public void UpdateSelectedDate(NativeCalendarView nativeCalendarView)
         {
