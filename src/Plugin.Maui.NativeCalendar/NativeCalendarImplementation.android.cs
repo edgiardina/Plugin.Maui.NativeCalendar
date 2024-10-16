@@ -19,12 +19,11 @@ namespace Plugin.Maui.NativeCalendar
         private readonly MaterialCalendar.CalendarView calendarView;
         private readonly NativeCalendarView nativeCalendarView;
 
-
-
         public NativeCalendarImplementation(Context context, NativeCalendarView nativeCalendarView) : base(context)
         {
             this.nativeCalendarView = nativeCalendarView;
-            calendarView = new MaterialCalendar.CalendarView(context);
+
+            int selectionMode = MaterialCalendar.CalendarView.OneDayPicker;            
 
             // set to single selection?
             //calendarView.SetSelectionMode(MaterialCalendarView.SelectionMode.Single);
@@ -40,7 +39,8 @@ namespace Plugin.Maui.NativeCalendar
             AddView(calendarView);
 
             // TODO set event handler when date is changed
-            //calendarView.SetOnCalendarDayClickListener(new MaterialCalendar.OnCalendarDayClickListener());
+            calendarView.SetOnCalendarDayClickListener(new OnCalendarDayClickListener(calendarView, nativeCalendarView));
+     
             //calendarView.DateChange += CalendarView_DateChange;
         }
 
@@ -52,8 +52,8 @@ namespace Plugin.Maui.NativeCalendar
         public void UpdateSelectedDate(NativeCalendarView nativeCalendarView)
         {
             Calendar date = Calendar.Instance;
-            date.Set(nativeCalendarView.SelectedDate.Year, nativeCalendarView.SelectedDate.Month - 1, nativeCalendarView.SelectedDate.Day);
-            calendarView.SetDate(date);
+            date.Set(nativeCalendarView.SelectedDate.Year, nativeCalendarView.SelectedDate.Month - 1, nativeCalendarView.SelectedDate.Day);            
+            //calendarView.SelectedDates = new List<Calendar> { date };
         }
 
         public void UpdateMaximumDate(NativeCalendarView nativeCalendarView)
@@ -79,7 +79,6 @@ namespace Plugin.Maui.NativeCalendar
             dotDrawable.SetIntrinsicWidth(16);
             dotDrawable.Paint.Color = nativeCalendarView.EventIndicatorColor.ToPlatform(); // Custom color for the dot
 
-
             // Update the events
             List<CalendarDay> calendarDays = new List<CalendarDay>();
 
@@ -93,12 +92,42 @@ namespace Plugin.Maui.NativeCalendar
                 CalendarDay calendarDay = new CalendarDay(calendar);
                 //calendarDay.s // Set a custom label (optional)
                 calendarDay.ImageDrawable = dotDrawable;  // Set a custom indicator (optional)
-                calendarDay.SelectedLabelColor = (Integer)Android.Graphics.Color.ParseColor("#228B22").ToArgb();  // Set a custom label color (optional)
                 calendarDays.Add(calendarDay);
             }
 
             // Set the calendar days to the CalendarView
             calendarView.SetCalendarDays(calendarDays);
+        }
+
+        private class OnCalendarDayClickListener : Java.Lang.Object, MaterialCalendar.Listeners.IOnCalendarDayClickListener
+        {
+            private readonly MaterialCalendar.CalendarView calendarView;
+            private readonly NativeCalendarView nativeCalendarView;
+
+            public OnCalendarDayClickListener(MaterialCalendar.CalendarView calendarView, NativeCalendarView nativeCalendarView)
+            {
+                this.calendarView = calendarView;
+                this.nativeCalendarView = nativeCalendarView;
+            }
+
+            public void OnClick(CalendarDay calendarDay)
+            {
+                Calendar clickedDate = calendarDay.Calendar;
+
+                // Get the day, month, and year
+                int day = clickedDate.Get(CalendarField.DayOfMonth);
+                int month = clickedDate.Get(CalendarField.Month) + 1; // Month is 0-based
+                int year = clickedDate.Get(CalendarField.Year);
+
+                // Your custom logic here
+                Console.WriteLine($"User clicked on date: {year}-{month}-{day}");
+
+                // TODO: do I need this?
+                //calendarView.SetDate(clickedDate);
+
+                nativeCalendarView.SelectedDate = new DateTime(year, month, day);
+            }
+
         }
 
     }
