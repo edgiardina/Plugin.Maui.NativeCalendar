@@ -1,10 +1,13 @@
 ﻿using Android.Content;
+using Android.Graphics.Drawables.Shapes;
 using Android.Widget;
 using AndroidX.CoordinatorLayout.Widget;
 using Com.Applandeo.Materialcalendarview;
 using Com.Applandeo.Materialcalendarview.Listeners;
 using Java.Interop;
+using Java.Lang;
 using Java.Util;
+using Microsoft.Maui.Platform;
 using static Android.Provider.CalendarContract;
 using static Plugin.Maui.NativeCalendar.NativeCalendarImplementation;
 using MaterialCalendar = Com.Applandeo.Materialcalendarview;
@@ -15,6 +18,8 @@ namespace Plugin.Maui.NativeCalendar
     {
         private readonly MaterialCalendar.CalendarView calendarView;
         private readonly NativeCalendarView nativeCalendarView;
+
+
 
         public NativeCalendarImplementation(Context context, NativeCalendarView nativeCalendarView) : base(context)
         {
@@ -68,6 +73,13 @@ namespace Plugin.Maui.NativeCalendar
 
         public void UpdateEvents(NativeCalendarView nativeCalendarView)
         {
+            // Create a ShapeDrawable to represent a dot
+            var dotDrawable = new Android.Graphics.Drawables.ShapeDrawable(new OvalShape());
+            dotDrawable.SetIntrinsicHeight(16);
+            dotDrawable.SetIntrinsicWidth(16);
+            dotDrawable.Paint.Color = nativeCalendarView.EventIndicatorColor.ToPlatform(); // Custom color for the dot
+
+
             // Update the events
             List<CalendarDay> calendarDays = new List<CalendarDay>();
 
@@ -79,7 +91,9 @@ namespace Plugin.Maui.NativeCalendar
 
                 // Create CalendarDay
                 CalendarDay calendarDay = new CalendarDay(calendar);
-                //calendarDay.SetLabelColor(Color.ParseColor("#228B22"));  // Set a custom label color (optional)
+                //calendarDay.s // Set a custom label (optional)
+                calendarDay.ImageDrawable = dotDrawable;  // Set a custom indicator (optional)
+                calendarDay.SelectedLabelColor = (Integer)Android.Graphics.Color.ParseColor("#228B22").ToArgb();  // Set a custom label color (optional)
                 calendarDays.Add(calendarDay);
             }
 
