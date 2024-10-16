@@ -85,8 +85,13 @@
 		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
 		<None Include="NativeCalendarHandler.android.cs" />
 	</ItemGroup>
+
+	<!-- Only reference the binding library when on Android-->
+	<ItemGroup Condition="$(TargetFramework.Contains('-android')) == true">
+	  <ProjectReference Include="..\MaterialCalendarView.Binding\MaterialCalendarView.Binding.csproj" />
+	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Android\" />
+	  <Folder Include="Droid\" />
 	</ItemGroup>
 
 </Project>
