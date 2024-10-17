@@ -19,8 +19,6 @@ namespace Plugin.Maui.NativeCalendar
         {
             this.nativeCalendarView = nativeCalendarView;
 
-            int selectionMode = MaterialCalendar.CalendarView.OneDayPicker;
-
             // set to single selection
             // unfortunately, MaterialCalendarView's selection mode is not available in code, you have to declare it as an XML property
             // https://github.com/dotnet/runtime/issues/102300
@@ -43,8 +41,8 @@ namespace Plugin.Maui.NativeCalendar
             // Set event handler when date is changed
             calendarView.SetOnCalendarDayClickListener(new OnCalendarDayClickListener(calendarView, nativeCalendarView));
 
-            calendarView.SetHeaderColor(Android.Graphics.Color.Transparent);
-            calendarView.SetBackgroundColor(Android.Graphics.Color.Transparent);
+            //calendarView.SetHeaderColor(Android.Graphics.Color.Transparent);
+            //calendarView.SetBackgroundColor(Android.Graphics.Color.Transparent);
 
         }
 

@@ -5,4 +5,5 @@
     android:id="@+id/calendarView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:type="one_day_picker"/>
+    app:type="one_day_picker"
+    app:eventsEnabled="true"/>
