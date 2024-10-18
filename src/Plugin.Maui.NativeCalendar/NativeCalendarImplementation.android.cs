@@ -41,16 +41,36 @@ namespace Plugin.Maui.NativeCalendar
             // Set event handler when date is changed
             calendarView.SetOnCalendarDayClickListener(new OnCalendarDayClickListener(calendarView, nativeCalendarView));
 
-            //calendarView.SetHeaderColor(Android.Graphics.Color.Transparent);
-            //calendarView.SetBackgroundColor(Android.Graphics.Color.Transparent);
 
+            calendarView.SetHeaderColor(nativeCalendarView.HeaderColor?.ToPlatform() ?? Android.Graphics.Color.Green);
+            calendarView.SetBackgroundColor(nativeCalendarView.BackgroundColor?.ToPlatform() ?? Android.Graphics.Color.Transparent);
+            calendarView.SetHeaderLabelColor(nativeCalendarView.TitleTextColor?.ToPlatform() ?? Android.Graphics.Color.Black);
+
+
+        }
+
+        public void UpdateTintColor(NativeCalendarView nativeCalendarView)
+        {
+            // TODO: no-op? or something else
+        }
+
+        public void UpdateTitleTextColor(NativeCalendarView nativeCalendarView)
+        {
+            calendarView.SetHeaderLabelColor(nativeCalendarView.TitleTextColor.ToPlatform());
+        }
+
+        public void UpdateHeaderColor(NativeCalendarView nativeCalendarView)
+        {
+            calendarView.SetHeaderColor(nativeCalendarView.HeaderColor.ToPlatform());
+            //TODO: set left and right marker colors to be the same as the header color
+            //calendarView.(nativeCalendarView.HeaderColor.ToPlatform());
         }
 
         public void UpdateSelectedDate(NativeCalendarView nativeCalendarView)
         {
             Calendar date = Calendar.Instance;
-            date.Set(nativeCalendarView.SelectedDate.Year, nativeCalendarView.SelectedDate.Month - 1, nativeCalendarView.SelectedDate.Day);            
-            //calendarView.SelectedDates = new List<Calendar> { date };
+            date.Set(nativeCalendarView.SelectedDate.Year, nativeCalendarView.SelectedDate.Month - 1, nativeCalendarView.SelectedDate.Day);
+            calendarView.SetDate(date);
         }
 
         public void UpdateMaximumDate(NativeCalendarView nativeCalendarView)
@@ -89,6 +109,7 @@ namespace Plugin.Maui.NativeCalendar
                 CalendarDay calendarDay = new CalendarDay(calendar);
                 //calendarDay.s // Set a custom label (optional)
                 calendarDay.ImageDrawable = dotDrawable;  // Set a custom indicator (optional)
+
                 calendarDays.Add(calendarDay);
             }
 
@@ -118,9 +139,6 @@ namespace Plugin.Maui.NativeCalendar
 
                 // Your custom logic here
                 Console.WriteLine($"User clicked on date: {year}-{month}-{day}");
-
-                // TODO: do I need this?
-                //calendarView.SetDate(clickedDate);
 
                 nativeCalendarView.SelectedDate = new DateTime(year, month, day);
             }

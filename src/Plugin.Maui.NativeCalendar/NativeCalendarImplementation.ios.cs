@@ -49,6 +49,9 @@ namespace Plugin.Maui.NativeCalendar
                     calendarView.BottomAnchor.ConstraintEqualTo(this.BottomAnchor)
                 });
 
+                // TODO: is this needed? it seems in iOS the background color bleeds through
+                calendarView.BackgroundColor = nativeCalendarView.BackgroundColor.ToPlatform();
+
                 // Set the delegate for calendarView
                 calendarView.Delegate = new CalendarViewDelegate(nativeCalendarView.Events, nativeCalendarView.EventIndicatorColor.ToPlatform());
 
@@ -59,6 +62,22 @@ namespace Plugin.Maui.NativeCalendar
             }
 
             this.nativeCalendarView = nativeCalendarView;
+        }
+
+        public void UpdateTintColor(NativeCalendarView nativeCalendarView)
+        {
+            calendarView.TintColor = nativeCalendarView.TintColor.ToPlatform();
+        }
+
+        public void UpdateTitleTextColor(NativeCalendarView nativeCalendarView)
+        {
+            // TODO: Set the title text color
+            //calendarView = nativeCalendarView.TitleTextColor.ToPlatform();
+        }
+
+        public void UpdateHeaderColor(NativeCalendarView nativeCalendarView)
+        {
+            // No-op?
         }
 
         public void UpdateSelectedDate(NativeCalendarView nativeCalendarView)

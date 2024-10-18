@@ -13,6 +13,9 @@
                                            HeightRequest="500"
                                            DateChanged="NativeCalendarView_DateChanged"
                                            DateChangedCommand="{Binding DateChangedCommand}"
+                                           TitleTextColor="{AppThemeBinding Light=Black, Dark=White}"
+                                           HeaderColor="{AppThemeBinding Dark=Black, Light=White}"
+                                           TintColor="LightGreen"
                                            />
 
         <Button Text="Change Events"
