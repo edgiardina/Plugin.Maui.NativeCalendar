@@ -21,13 +21,13 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 
 		<!-- NuGet -->
-		<Authors>author</Authors>
+		<Authors>Ed Giardina</Authors>
 		<Copyright>Copyright © 2024 Ed Giardina</Copyright>
 		<IsPackable>True</IsPackable>
 		<PackageProjectUrl>https://github.com/edgiardina/Plugin.Maui.NativeCalendar</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/edgiardina/Plugin.Maui.NativeCalendar</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageTags>dotnet-maui;maui;plugin;</PackageTags>
+		<PackageTags>dotnet-maui;maui;plugin;calendar;</PackageTags>
 		<IncludeSymbols>True</IncludeSymbols>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
