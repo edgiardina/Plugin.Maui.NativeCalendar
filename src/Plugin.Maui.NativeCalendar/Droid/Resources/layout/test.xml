@@ -6,4 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:type="one_day_picker"
+    app:pagesColor="#FFC0CB"
+    app:abbreviationsBarColor="#FF4455"
+    app:selectionColor="#FF6699"
+    app:todayLabelColor="@android:color/holo_purple"
     app:eventsEnabled="true"/>

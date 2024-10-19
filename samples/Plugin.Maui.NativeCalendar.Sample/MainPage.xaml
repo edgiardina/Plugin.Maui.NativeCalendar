@@ -16,6 +16,7 @@
                                            TitleTextColor="{AppThemeBinding Light=Black, Dark=White}"
                                            HeaderColor="{AppThemeBinding Dark=Black, Light=White}"
                                            TintColor="LightGreen"
+                                           BackgroundColor="Transparent"
                                            />
 
         <Button Text="Change Events"

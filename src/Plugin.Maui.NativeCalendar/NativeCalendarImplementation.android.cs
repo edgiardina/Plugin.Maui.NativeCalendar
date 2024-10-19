@@ -1,7 +1,11 @@
 ﻿using Android.Content;
+using Android.Graphics;
+using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
+using Android.Util;
 using Android.Widget;
 using AndroidX.CoordinatorLayout.Widget;
+using AndroidX.ResourceInspection.Annotation;
 using Com.Applandeo.Materialcalendarview;
 using Java.Util;
 using Microsoft.Maui.Platform;
@@ -12,51 +16,29 @@ namespace Plugin.Maui.NativeCalendar
 {
     public class NativeCalendarImplementation : FrameLayout
     {
-        private readonly MaterialCalendar.CalendarView calendarView;
+        private MaterialCalendar.CalendarView calendarView;
         private readonly NativeCalendarView nativeCalendarView;
 
         public NativeCalendarImplementation(Context context, NativeCalendarView nativeCalendarView) : base(context)
         {
             this.nativeCalendarView = nativeCalendarView;
 
-            // set to single selection
-            // unfortunately, MaterialCalendarView's selection mode is not available in code, you have to declare it as an XML property
-            // https://github.com/dotnet/runtime/issues/102300
-            XmlReader xmlResource = this.Resources.GetXml(Resource.Layout.test);
-            xmlResource.Read();
-            Android.Util.IAttributeSet attributes = Android.Util.Xml.AsAttributeSet(xmlResource);
-
-            calendarView = new MaterialCalendar.CalendarView(context, attributes);
-
-            // Set layout parameters, e.g., match parent in both dimensions
-            var layoutParams = new CoordinatorLayout.LayoutParams(
-                LayoutParams.MatchParent,
-                LayoutParams.MatchParent
-            );
-
-            // Add the CalendarView to the CoordinatorLayout
-            calendarView.LayoutParameters = layoutParams;
-            AddView(calendarView);
-
-            // Set event handler when date is changed
-            calendarView.SetOnCalendarDayClickListener(new OnCalendarDayClickListener(calendarView, nativeCalendarView));
-
-
-            calendarView.SetHeaderColor(nativeCalendarView.HeaderColor?.ToPlatform() ?? Android.Graphics.Color.Green);
-            calendarView.SetBackgroundColor(nativeCalendarView.BackgroundColor?.ToPlatform() ?? Android.Graphics.Color.Transparent);
-            calendarView.SetHeaderLabelColor(nativeCalendarView.TitleTextColor?.ToPlatform() ?? Android.Graphics.Color.Black);
-
-
+            SetupCalendarView();
         }
 
         public void UpdateTintColor(NativeCalendarView nativeCalendarView)
         {
             // TODO: no-op? or something else
+            // set selection background color to tintColor
+            //calendarView.SetSelectionBackground(nativeCalendarView.TintColor.ToPlatform());
         }
 
         public void UpdateTitleTextColor(NativeCalendarView nativeCalendarView)
         {
             calendarView.SetHeaderLabelColor(nativeCalendarView.TitleTextColor.ToPlatform());
+            // set forward button image to be a fontimage of a greater than symbol colored to match the title text color
+            calendarView.SetForwardButtonImage(CreateArrowDrawable(">"));
+            calendarView.SetPreviousButtonImage(CreateArrowDrawable("<"));
         }
 
         public void UpdateHeaderColor(NativeCalendarView nativeCalendarView)
@@ -110,11 +92,87 @@ namespace Plugin.Maui.NativeCalendar
                 //calendarDay.s // Set a custom label (optional)
                 calendarDay.ImageDrawable = dotDrawable;  // Set a custom indicator (optional)
 
+                // set calendar day background color
+                //calendarDay.SelectedBackgroundDrawable = new Android.Graphics.Drawables.ColorDrawable(Android.Graphics.Color.Red);
+                //calendarDay.BackgroundDrawable = new Android.Graphics.Drawables.ColorDrawable(Android.Graphics.Color.Pink);
+
                 calendarDays.Add(calendarDay);
             }
 
             // Set the calendar days to the CalendarView
-            calendarView.SetCalendarDays(calendarDays);
+            calendarView.SetCalendarDays(calendarDays);            
+        }
+
+        private void SetupCalendarView()
+        {
+            var attributes = GetAttributeSet();
+
+            calendarView = new MaterialCalendar.CalendarView(this.Context, attributes);
+
+            // Set layout parameters, e.g., match parent in both dimensions
+            var layoutParams = new CoordinatorLayout.LayoutParams(
+                LayoutParams.MatchParent,
+                LayoutParams.MatchParent
+            );
+
+            // Add the CalendarView to the CoordinatorLayout
+            calendarView.LayoutParameters = layoutParams;
+            AddView(calendarView);
+
+            // Set event handler when date is changed
+            calendarView.SetOnCalendarDayClickListener(new OnCalendarDayClickListener(calendarView, nativeCalendarView));
+
+
+            calendarView.SetHeaderColor(nativeCalendarView.HeaderColor?.ToPlatform() ?? Android.Graphics.Color.Green);
+            calendarView.SetBackgroundColor(nativeCalendarView.BackgroundColor?.ToPlatform() ?? Android.Graphics.Color.Transparent);
+            calendarView.SetHeaderLabelColor(nativeCalendarView.TitleTextColor?.ToPlatform() ?? Android.Graphics.Color.Black);
+            //calendarView.SetSelectionBackground(nativeCalendarView.TintColor?.ToPlatform() ?? Android.Graphics.Color.Blue);
+
+            UpdateEvents(nativeCalendarView);
+        }
+
+        private IAttributeSet GetAttributeSet()
+        {
+            // set to single selection
+            // unfortunately, MaterialCalendarView's selection mode is not available in code, you have to declare it as an XML property
+            // https://github.com/dotnet/runtime/issues/102300
+            XmlReader xmlResource = this.Resources.GetXml(Resource.Layout.test);
+
+            // Change these values in the XML element to match the NativeCalendarView properties
+            //    app: pagesColor = "#FFC0CB"
+            //app: abbreviationsBarColor = "#FF4455"
+            //app: selectionColor = "#FF6699"
+            //app: todayLabelColor = "@android:color/holo_purple"
+
+            xmlResource.Read();
+            return Xml.AsAttributeSet(xmlResource);
+        }
+
+        private Drawable CreateArrowDrawable(string symbol)
+        {
+            // Create a bitmap to draw the symbol
+            Bitmap bitmap = Bitmap.CreateBitmap(100, 100, Bitmap.Config.Argb8888);
+            Canvas canvas = new Canvas(bitmap);
+
+            // Set up the paint for drawing text
+            Android.Graphics.Paint paint = new Android.Graphics.Paint
+            {
+                AntiAlias = true,
+                Color = nativeCalendarView.TitleTextColor.ToPlatform(),  // Customize the color if needed                
+                TextSize = 150         // Adjust text size based on your preference
+            };
+
+            // Measure the text size to center it in the bitmap
+            Android.Graphics.Rect textBounds = new Android.Graphics.Rect();
+            paint.GetTextBounds(symbol, 0, symbol.Length, textBounds);
+            float x = (bitmap.Width - textBounds.Width()) / 2f;
+            float y = (bitmap.Height + textBounds.Height()) / 2f;
+
+            // Draw the symbol to the canvas
+            canvas.DrawText(symbol, x, y, paint);
+
+            // Create a drawable from the bitmap
+            return new BitmapDrawable(bitmap);
         }
 
         private class OnCalendarDayClickListener : Java.Lang.Object, MaterialCalendar.Listeners.IOnCalendarDayClickListener
