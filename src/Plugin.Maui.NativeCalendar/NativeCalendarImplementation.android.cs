@@ -24,6 +24,11 @@ namespace Plugin.Maui.NativeCalendar
             this.nativeCalendarView = nativeCalendarView;
 
             SetupCalendarView();
+
+            Application.Current.RequestedThemeChanged += (s, a) =>
+            {
+                SetupCalendarView();
+            };
         }
 
         public void UpdateTintColor(NativeCalendarView nativeCalendarView)
@@ -133,12 +138,22 @@ namespace Plugin.Maui.NativeCalendar
 
         private IAttributeSet GetAttributeSet()
         {
+            XmlReader xmlResource;
             // set to single selection
             // unfortunately, MaterialCalendarView's selection mode is not available in code, you have to declare it as an XML property
             // https://github.com/dotnet/runtime/issues/102300
-            XmlReader xmlResource = this.Resources.GetXml(Resource.Layout.test);
 
-            // Change these values in the XML element to match the NativeCalendarView properties
+            // if dark mode, load dark layout, otherwise load light layout
+            if (Application.Current.RequestedTheme == AppTheme.Dark)
+            {
+                xmlResource = this.Resources.GetXml(Resource.Layout.dark);
+            }
+            else
+            {
+                xmlResource = this.Resources.GetXml(Resource.Layout.light);
+            }
+
+            // TODO: Change these values in the XML element to match the NativeCalendarView properties
             //    app: pagesColor = "#FFC0CB"
             //app: abbreviationsBarColor = "#FF4455"
             //app: selectionColor = "#FF6699"

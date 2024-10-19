@@ -73,10 +73,12 @@
 		<None Include="**\*.net.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
 	</ItemGroup>
 	<ItemGroup>
-	  <None Remove="Droid\Resources\layout\test.xml" />
+	  <None Remove="Droid\Resources\layout\dark.xml" />
+	  <None Remove="Droid\Resources\layout\light.xml" />
 	</ItemGroup>
 	<ItemGroup>
-	  <AndroidResource Include="Droid\Resources\layout\test.xml" />
+	  <AndroidResource Include="Droid\Resources\layout\dark.xml" />
+	  <AndroidResource Include="Droid\Resources\layout\light.xml" />
 	</ItemGroup>
 
 	<ItemGroup>
