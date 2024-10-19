@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<com.applandeo.materialcalendarview.CalendarView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/calendarView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:type="one_day_picker"
+    app:pagesColor="#FFFFFF"
+    app:abbreviationsBarColor="#f6f6f6"
+    app:daysLabelsColor="#000000"
+    app:selectionColor="#4579FB"
+    app:todayLabelColor="#4579FB"
+    app:eventsEnabled="true"/>

@@ -95,13 +95,55 @@ namespace Plugin.Maui.NativeCalendar
             returnType: typeof(ICommand),
             declaringType: typeof(NativeCalendarView),
             defaultValue: null
-        );
+        );        
 
         public ICommand DateChangedCommand
         {
             get => (ICommand)GetValue(DateChangedCommandProperty);
             set => SetValue(DateChangedCommandProperty, value);
         }
+
+        public static readonly BindableProperty TitleTextColorProperty = BindableProperty.Create(
+            propertyName: nameof(TitleTextColor),
+            returnType: typeof(Color),
+            declaringType: typeof(NativeCalendarView),
+            defaultValue: Colors.Transparent,
+            defaultBindingMode: BindingMode.TwoWay
+        );        
+
+        public Color TitleTextColor
+        {
+            get => (Color)GetValue(TitleTextColorProperty);
+            set => SetValue(TitleTextColorProperty, value);
+        }
+
+        public static readonly BindableProperty HeaderColorProperty = BindableProperty.Create(
+            propertyName: nameof(HeaderColor),
+            returnType: typeof(Color),
+            declaringType: typeof(NativeCalendarView),
+            defaultValue: Colors.Transparent,
+            defaultBindingMode: BindingMode.TwoWay
+        );
+
+        public Color HeaderColor
+        {
+            get => (Color)GetValue(HeaderColorProperty);
+            set => SetValue(HeaderColorProperty, value);
+        }
+
+        public static readonly BindableProperty TintColorProperty = BindableProperty.Create(
+            propertyName: nameof(TintColor),
+            returnType: typeof(Color),
+            declaringType: typeof(NativeCalendarView),
+            defaultValue: Colors.Blue,
+            defaultBindingMode: BindingMode.TwoWay
+        );
+        public Color TintColor
+        {
+            get => (Color)GetValue(TintColorProperty);
+            set => SetValue(TintColorProperty, value);
+        }
+
 
         #endregion
 
