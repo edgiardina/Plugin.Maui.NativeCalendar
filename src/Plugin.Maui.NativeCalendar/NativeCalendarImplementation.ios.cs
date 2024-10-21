@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UIKit;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Plugin.Maui.NativeCalendar
 {
@@ -102,8 +103,13 @@ namespace Plugin.Maui.NativeCalendar
 
         public void UpdateMaximumDate(NativeCalendarView nativeCalendarView)
         {
-            if(nativeCalendarView.MaximumDate != null && nativeCalendarView.MaximumDate != DateTime.MinValue)
+            if (nativeCalendarView.MaximumDate != null && nativeCalendarView.MaximumDate != DateTime.MinValue)
+            {
+                if (nativeCalendarView.MaximumDate.Kind == DateTimeKind.Unspecified)
+                    nativeCalendarView.MaximumDate = DateTime.SpecifyKind(nativeCalendarView.MaximumDate, DateTimeKind.Local);
+
                 MaxDate = (NSDate)nativeCalendarView.MaximumDate;
+            }
 
             // Update the maximum date of the CalendarView
             calendarView.AvailableDateRange = new Foundation.NSDateInterval(MinDate, MaxDate);
@@ -112,7 +118,12 @@ namespace Plugin.Maui.NativeCalendar
         public void UpdateMinimumDate(NativeCalendarView nativeCalendarView)
         {
             if (nativeCalendarView.MinimumDate != null && nativeCalendarView.MinimumDate != DateTime.MinValue)
+            {
+                if (nativeCalendarView.MinimumDate.Kind == DateTimeKind.Unspecified)
+                    nativeCalendarView.MinimumDate = DateTime.SpecifyKind(nativeCalendarView.MinimumDate, DateTimeKind.Local);
+
                 MinDate = (NSDate)nativeCalendarView.MinimumDate;
+            }
 
             // Update the minimum date of the CalendarView
             calendarView.AvailableDateRange = new Foundation.NSDateInterval(MinDate, MaxDate);
