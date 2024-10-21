@@ -50,7 +50,8 @@ namespace Plugin.Maui.NativeCalendar
                 });
 
                 // TODO: is this needed? it seems in iOS the background color bleeds through
-                calendarView.BackgroundColor = nativeCalendarView.BackgroundColor.ToPlatform();
+                if(nativeCalendarView.BackgroundColor != null)  
+                    calendarView.BackgroundColor = nativeCalendarView.BackgroundColor.ToPlatform();
 
                 // Set the delegate for calendarView
                 calendarView.Delegate = new CalendarViewDelegate(nativeCalendarView.Events, nativeCalendarView.EventIndicatorColor.ToPlatform());
@@ -101,7 +102,8 @@ namespace Plugin.Maui.NativeCalendar
 
         public void UpdateMaximumDate(NativeCalendarView nativeCalendarView)
         {
-            MaxDate = (NSDate)nativeCalendarView.MaximumDate;
+            if(nativeCalendarView.MaximumDate != null && nativeCalendarView.MaximumDate != DateTime.MinValue)
+                MaxDate = (NSDate)nativeCalendarView.MaximumDate;
 
             // Update the maximum date of the CalendarView
             calendarView.AvailableDateRange = new Foundation.NSDateInterval(MinDate, MaxDate);
@@ -109,7 +111,8 @@ namespace Plugin.Maui.NativeCalendar
 
         public void UpdateMinimumDate(NativeCalendarView nativeCalendarView)
         {
-            MinDate = (NSDate)nativeCalendarView.MinimumDate;
+            if (nativeCalendarView.MinimumDate != null && nativeCalendarView.MinimumDate != DateTime.MinValue)
+                MinDate = (NSDate)nativeCalendarView.MinimumDate;
 
             // Update the minimum date of the CalendarView
             calendarView.AvailableDateRange = new Foundation.NSDateInterval(MinDate, MaxDate);
