@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,14 +14,14 @@ namespace Plugin.Maui.NativeCalendar
 
         public static readonly BindableProperty EventsProperty = BindableProperty.Create(
             propertyName: nameof(Events),
-            returnType: typeof(List<NativeCalendarEvent>),
+            returnType: typeof(IEnumerable<NativeCalendarEvent>),
             declaringType: typeof(NativeCalendarView),
-            defaultValue: new List<NativeCalendarEvent>(),
+            defaultValue: new ObservableCollection<NativeCalendarEvent>(),
             defaultBindingMode: BindingMode.TwoWay
         );
-        public List<NativeCalendarEvent> Events
+        public IEnumerable<NativeCalendarEvent> Events
         {
-            get => (List<NativeCalendarEvent>)GetValue(EventsProperty);
+            get => (IEnumerable<NativeCalendarEvent>)GetValue(EventsProperty);
             set => SetValue(EventsProperty, value);
         }
 

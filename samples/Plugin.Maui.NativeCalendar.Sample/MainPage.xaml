@@ -21,5 +21,8 @@
 
         <Button Text="Change Events"
                 Command="{Binding ChangeEventsCommand}"/>
+
+        <Button Text="Change Selected Date Programmatically"
+                Command="{Binding ChangeSelectedDateCommand}"/>
     </StackLayout>
 </ContentPage>

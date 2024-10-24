@@ -89,5 +89,11 @@ namespace Plugin.Maui.NativeCalendar.Sample
             Console.WriteLine($"Selected Date: {dateChangedEventArgs.NewDate}");
         }
 
+        [RelayCommand]
+        public void ChangeSelectedDate()
+        {
+            SelectedDate = DateTime.Now.AddDays(random.Next(31));
+        }
+
     }
 }
