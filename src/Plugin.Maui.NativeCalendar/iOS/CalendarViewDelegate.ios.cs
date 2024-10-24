@@ -5,10 +5,10 @@ namespace Plugin.Maui.NativeCalendar.iOS
 {
     public class CalendarViewDelegate : NSObject, IUICalendarViewDelegate
     {
-        private readonly List<NativeCalendarEvent> events;
+        private readonly IEnumerable<NativeCalendarEvent> events;
         private readonly UIColor eventIndicatorColor;
 
-        public CalendarViewDelegate(List<NativeCalendarEvent> events, UIColor eventIndicatorColor)
+        public CalendarViewDelegate(IEnumerable<NativeCalendarEvent> events, UIColor eventIndicatorColor)
         {
             // List of calendar events
             this.events = events;
