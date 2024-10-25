@@ -29,7 +29,6 @@ namespace Plugin.Maui.NativeCalendar
                 LayoutParams.MatchParent
             );
 
-            calendarView.WeekSeparatorLineColor = Android.Graphics.Color.LimeGreen;      
 
             // Add the CalendarView to the CoordinatorLayout
             calendarView.LayoutParameters = layoutParams;
