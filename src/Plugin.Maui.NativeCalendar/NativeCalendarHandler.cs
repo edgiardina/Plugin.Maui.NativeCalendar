@@ -16,8 +16,6 @@ namespace Plugin.Maui.NativeCalendar
             [nameof(NativeCalendarView.SelectedDate)] = MapSelectedDate,
             [nameof(NativeCalendarView.Events)] = MapEvents,
             [nameof(NativeCalendarView.EventIndicatorColor)] = MapEventIndicatorColor,
-            [nameof(NativeCalendarView.TitleTextColor)] = MapTitleTextColor,
-            [nameof(NativeCalendarView.HeaderColor)] = MapHeaderColor,
             [nameof(NativeCalendarView.TintColor)] = MapTintColor
         };
 
@@ -55,14 +53,6 @@ namespace Plugin.Maui.NativeCalendar
             handler.PlatformView?.UpdateEvents(view);
         }
 
-        private static void MapTitleTextColor(NativeCalendarHandler handler, NativeCalendarView view)
-        {
-            handler.PlatformView?.UpdateTitleTextColor(view);
-        }
-        private static void MapHeaderColor(NativeCalendarHandler handler, NativeCalendarView view)
-        {
-            handler.PlatformView?.UpdateHeaderColor(view);
-        }
         private static void MapTintColor(NativeCalendarHandler handler, NativeCalendarView view)
         {
             handler.PlatformView?.UpdateTintColor(view);

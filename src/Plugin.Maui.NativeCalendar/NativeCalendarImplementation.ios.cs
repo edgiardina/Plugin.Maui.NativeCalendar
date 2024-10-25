@@ -71,17 +71,6 @@ namespace Plugin.Maui.NativeCalendar
             calendarView.TintColor = nativeCalendarView.TintColor.ToPlatform();
         }
 
-        public void UpdateTitleTextColor(NativeCalendarView nativeCalendarView)
-        {
-            // TODO: Set the title text color
-            //calendarView = nativeCalendarView.TitleTextColor.ToPlatform();
-        }
-
-        public void UpdateHeaderColor(NativeCalendarView nativeCalendarView)
-        {
-            // No-op?
-        }
-
         public void UpdateSelectedDate(NativeCalendarView nativeCalendarView)
         {
             // Create NSDateComponents from the DateTime

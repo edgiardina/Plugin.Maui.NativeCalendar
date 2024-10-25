@@ -38,19 +38,7 @@ namespace Plugin.Maui.NativeCalendar
         public void UpdateTintColor(NativeCalendarView nativeCalendarView)
         {
             // TODO: no-op? or something else
-            // set selection background color to tintColor
-         
-        }
-
-        public void UpdateTitleTextColor(NativeCalendarView nativeCalendarView)
-        {
-            
-        }
-
-        public void UpdateHeaderColor(NativeCalendarView nativeCalendarView)
-        {
-            //TODO: set left and right marker colors to be the same as the header color
-            //calendarView.(nativeCalendarView.HeaderColor.ToPlatform());
+            // set selection background color to tintColor         
         }
 
         public void UpdateSelectedDate(NativeCalendarView nativeCalendarView)
