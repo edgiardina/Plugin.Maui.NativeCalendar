@@ -70,14 +70,6 @@
 		<Compile Remove="**\*.net.cs" />
 		<None Include="**\*.net.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
 	</ItemGroup>
-	<ItemGroup>
-	  <None Remove="Droid\Resources\layout\dark.xml" />
-	  <None Remove="Droid\Resources\layout\light.xml" />
-	</ItemGroup>
-	<ItemGroup>
-	  <AndroidResource Include="Droid\Resources\layout\dark.xml" />
-	  <AndroidResource Include="Droid\Resources\layout\light.xml" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
@@ -91,18 +83,8 @@
 		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
 		<None Include="NativeCalendarHandler.android.cs" />
 	</ItemGroup>
-
-	<!-- Only reference the binding library when on Android-->
-	<ItemGroup Condition="$(TargetFramework.Contains('-android')) == true">
-		<ProjectReference Include="..\MaterialCalendarView.Binding\MaterialCalendarView.Binding.csproj" >
-			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-			<IncludeAssets>MaterialCalendarView.Binding.dll</IncludeAssets>
-		</ProjectReference>
+	<ItemGroup>
+	  <Folder Include="Droid\" />
 	</ItemGroup>
-	<Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
-		<ItemGroup>
-			<BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))"/>
-		</ItemGroup>
-	</Target>
 
 </Project>
