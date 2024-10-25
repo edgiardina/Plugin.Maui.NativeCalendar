@@ -20,7 +20,11 @@ Install with the dotnet CLI: `dotnet add package Plugin.Maui.NativeCalendar`, or
 
 ## API Usage
 
-`Plugin.Maui.NativeCalendar` provides the `NativeCalendar` class that displays a native calendar view in your .NET MAUI app.
+`Plugin.Maui.NativeCalendar` provides the `NativeCalendar` class that displays a native calendar view in your .NET MAUI app. 
+
+The calendar view on iOS is implemented using `UICalendarView`.  NOTE: iOS requires a declared height for the NativeCalendarView to appear.
+
+The calendar view on Android is implemented using `CalendarView` from the Android Widgets library
 
 ### Permissions
 
@@ -77,30 +81,34 @@ And then consume your calendar in the XAML page:
 
 #### Events
 
-##### `ReadingChanged`
+##### `DateSelected`
 
-Occurs when feature reading changes.
+Occurs when Date is selected via user interaction.
 
 #### Properties
 
-##### `IsSupported`
+##### `TintColor`
 
-Gets a value indicating whether reading the feature is supported on this device.
+Bindable property indicating the color of the current day and selected day on the calendar for iOS
 
-##### `IsMonitoring`
+For android, the color of the current day and selected day is the primary color of the app, defined in the `colors.xml` file.
 
-Gets a value indicating whether the feature is actively being monitored.
+##### `EventIndicatorColor`
 
-#### Methods
+Color of the Event Indicator, a dot that appears below the date number indicating there is an event on that date. (Currently only works on iOS, check soon for an Android implementation)
 
-##### `Start()`
+##### `MinimumDate`
 
-Start monitoring for changes to the feature.
+Lowest date that can be selected on the calendar.
 
-##### `Stop()`
+##### `MaxminumDate`
 
-Stop monitoring for changes to the feature.
+Greatest date that can be selected on the calendar.
 
-# Acknowledgements
+##### `SelectedDate`
 
-This project could not have came to be without these projects and people, thank you! <3
+Date that is currently selected on the calendar.
+
+##### `Events`
+
+List of dates that have events. The calendar will display a dot below the date number to indicate there is an event on that date. (iOS only)
