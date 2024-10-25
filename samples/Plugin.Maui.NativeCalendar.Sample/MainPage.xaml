@@ -6,15 +6,12 @@
              Title="Native Calendar Plugin">
     <StackLayout Padding="10">
         <nativecalendar:NativeCalendarView MaximumDate="{Binding MaximumDate}"
-                                           MinimumDate="{Binding MinimumDate}"
                                            SelectedDate="{Binding SelectedDate}"
                                            Events="{Binding Events}"
                                            EventIndicatorColor="{Binding EventIndicatorColor}"
                                            HeightRequest="500"
                                            DateChanged="NativeCalendarView_DateChanged"
                                            DateChangedCommand="{Binding DateChangedCommand}"
-                                           TitleTextColor="{AppThemeBinding Light=Black, Dark=White}"
-                                           HeaderColor="{AppThemeBinding Dark=Black, Light=White}"
                                            TintColor="LightGreen"
                                            BackgroundColor="Transparent"
                                            />

@@ -63,7 +63,7 @@ namespace Plugin.Maui.NativeCalendar
 
         private long ConvertDateTimeToLong(DateTime dateTime)
         {
-            return new DateTimeOffset(dateTime).ToUnixTimeMilliseconds();
+            return new DateTimeOffset(dateTime.Date).ToUnixTimeMilliseconds();
         }
 
         private class DateChangeListener : Java.Lang.Object, CalendarView.IOnDateChangeListener
