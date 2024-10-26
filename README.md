@@ -3,6 +3,11 @@
 
 `Plugin.Maui.NativeCalendar` provides the ability to implement native calendar functionality in your .NET MAUI app.
 
+
+![iOS](https://raw.githubusercontent.com/edgiardina/Plugin.Maui.NativeCalendar/main/ios-example.png)
+
+![Android](https://raw.githubusercontent.com/edgiardina/Plugin.Maui.NativeCalendar/main/android-example.png)
+
 ## Install Plugin
 
 [![NuGet](https://img.shields.io/nuget/v/Plugin.Maui.NativeCalendar.svg?label=NuGet)](https://www.nuget.org/packages/Plugin.Maui.NativeCalendar/)
