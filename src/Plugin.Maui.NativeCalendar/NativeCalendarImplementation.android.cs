@@ -5,6 +5,7 @@ using Android.Graphics.Drawables.Shapes;
 using Android.Util;
 using Android.Widget;
 using AndroidX.CoordinatorLayout.Widget;
+using Google.Android.Material.DatePicker;
 using Java.Util;
 using Microsoft.Maui.Platform;
 using Plugin.Maui.NativeCalendar.Droid;
@@ -34,7 +35,11 @@ namespace Plugin.Maui.NativeCalendar
 
             // Add the CalendarView to the CoordinatorLayout
             calendarView.LayoutParameters = layoutParams;
-            AddView(calendarView);
+            //AddView(calendarView);
+
+            Id = GenerateViewId();
+
+            GenerateCalendarFragmentAndRender();
         }
 
         public void UpdateTintColor(NativeCalendarView nativeCalendarView)
@@ -60,6 +65,29 @@ namespace Plugin.Maui.NativeCalendar
         public void UpdateEvents(NativeCalendarView nativeCalendarView)
         {
             calendarView.Events = nativeCalendarView.Events;
+        }
+
+        private void GenerateCalendarFragmentAndRender()
+        {
+            // Create a CalendarConstraints object to provide a valid date range for the MaterialCalendar
+            var calendar = Java.Util.Calendar.Instance;
+            long startMillis = calendar.TimeInMillis; // Start from today
+
+            calendar.Add(Java.Util.CalendarField.Year, 1);
+            long endMillis = calendar.TimeInMillis; // One year from today
+            CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
+            constraintsBuilder.SetStart(startMillis);
+            constraintsBuilder.SetEnd(endMillis);
+            constraintsBuilder.SetOpenAt(startMillis);
+            constraintsBuilder.SetValidator(DateValidatorPointForward.From(startMillis));
+
+            var t = MaterialCalendar.NewInstance(new SingleDateSelector(), 0, constraintsBuilder.Build());
+            Post(() =>
+            {
+                var transaction = Context.GetFragmentManager().BeginTransaction();
+                transaction.Add(Id, t, "MaterialCalendar");
+                transaction.Commit();
+            });
         }
 
         private class DateChangeListener : Java.Lang.Object, CalendarView.IOnDateChangeListener
