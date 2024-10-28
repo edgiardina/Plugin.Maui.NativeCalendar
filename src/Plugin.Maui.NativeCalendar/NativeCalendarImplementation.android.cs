@@ -2,40 +2,35 @@
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
+using Android.OS;
+using Android.Runtime;
 using Android.Util;
 using Android.Widget;
 using AndroidX.CoordinatorLayout.Widget;
 using Google.Android.Material.DatePicker;
 using Java.Util;
 using Microsoft.Maui.Platform;
-using Plugin.Maui.NativeCalendar.Droid;
 using Plugin.Maui.NativeCalendar.Extensions;
 using System.Xml;
 using static Android.Widget.CalendarView;
+using Color = Android.Graphics.Color;
+using Paint = Android.Graphics.Paint;
+using ShapeDrawable = Android.Graphics.Drawables.ShapeDrawable;
 
 namespace Plugin.Maui.NativeCalendar
 {
     public class NativeCalendarImplementation : FrameLayout
     {
-        private ExtendedCalendarView calendarView;
+
+        private MaterialCalendar materialCalendarFragment;
+        private SingleDateSelector DateSelector;
+        private CalendarConstraints calendarConstraints;
+
         private readonly NativeCalendarView nativeCalendarView;
 
         public NativeCalendarImplementation(Context context, NativeCalendarView nativeCalendarView) : base(context)
         {
             this.nativeCalendarView = nativeCalendarView;
-
-            calendarView = new ExtendedCalendarView(context);
-            calendarView.SetOnDateChangeListener(new DateChangeListener(nativeCalendarView));
-
-            var layoutParams = new CoordinatorLayout.LayoutParams(
-                LayoutParams.MatchParent,
-                LayoutParams.MatchParent
-            );
-
-
-            // Add the CalendarView to the CoordinatorLayout
-            calendarView.LayoutParameters = layoutParams;
-            //AddView(calendarView);
 
             Id = GenerateViewId();
 
@@ -44,65 +39,88 @@ namespace Plugin.Maui.NativeCalendar
 
         public void UpdateTintColor(NativeCalendarView nativeCalendarView)
         {
-            calendarView.EventIndicatorColor = nativeCalendarView.TintColor.ToPlatform();
+            
         }
 
         public void UpdateSelectedDate(NativeCalendarView nativeCalendarView)
         {
-            calendarView.Date = nativeCalendarView.SelectedDate.ToLongInteger();
+            //calendarView.Date = nativeCalendarView.SelectedDate.ToLongInteger();
+            materialCalendarFragment?.DateSelector?.Select(nativeCalendarView.SelectedDate.ToLongInteger());
+            
         }
 
         public void UpdateMaximumDate(NativeCalendarView nativeCalendarView)
         {
-            calendarView.MaxDate = nativeCalendarView.MaximumDate.ToLongInteger();
+            //calendarConstraints. = nativeCalendarView.MaximumDate.ToLongInteger();
         }
 
         public void UpdateMinimumDate(NativeCalendarView nativeCalendarView)
         {
-            calendarView.MinDate = nativeCalendarView.MinimumDate.ToLongInteger();
+            
         }
 
         public void UpdateEvents(NativeCalendarView nativeCalendarView)
         {
-            calendarView.Events = nativeCalendarView.Events;
+            
         }
 
         private void GenerateCalendarFragmentAndRender()
         {
-            // Create a CalendarConstraints object to provide a valid date range for the MaterialCalendar
-            var calendar = Java.Util.Calendar.Instance;
-            long startMillis = calendar.TimeInMillis; // Start from today
-
-            calendar.Add(Java.Util.CalendarField.Year, 1);
-            long endMillis = calendar.TimeInMillis; // One year from today
+            // Create a CalendarConstraints object to provide a valid date ran
             CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
-            constraintsBuilder.SetStart(startMillis);
-            constraintsBuilder.SetEnd(endMillis);
-            constraintsBuilder.SetOpenAt(startMillis);
-            constraintsBuilder.SetValidator(DateValidatorPointForward.From(startMillis));
+            constraintsBuilder.SetStart(nativeCalendarView.MinimumDate.ToLongInteger());
+            constraintsBuilder.SetEnd(nativeCalendarView.MaximumDate.ToLongInteger());
+            constraintsBuilder.SetOpenAt(nativeCalendarView.SelectedDate.ToLongInteger());
+            constraintsBuilder.SetValidator(DateValidatorPointForward.From(nativeCalendarView.MinimumDate.ToLongInteger()));
 
-            var t = MaterialCalendar.NewInstance(new SingleDateSelector(), 0, constraintsBuilder.Build());
+            calendarConstraints = constraintsBuilder.Build();
+
+            DateSelector = new SingleDateSelector();
+
+            // create dayviewdecorator to add event indicators (small circles)
+            DayViewDecorator dayViewDecorator = new EventIndicatorDayViewDecorator(nativeCalendarView.EventIndicatorColor.ToPlatform());
+
+            materialCalendarFragment = MaterialCalendar.NewInstance(DateSelector, 0, calendarConstraints, dayViewDecorator);
+ 
+            //materialCalendarFragment.AddOnSelectionChangedListener(new MaterialCalendarOnSelectionChangedListener(nativeCalendarView, materialCalendarFragment));
+
+            //materialCalendarFragment.DateSelector.
             Post(() =>
             {
                 var transaction = Context.GetFragmentManager().BeginTransaction();
-                transaction.Add(Id, t, "MaterialCalendar");
+                transaction.Add(Id, materialCalendarFragment, "MaterialCalendar");
                 transaction.Commit();
             });
         }
 
-        private class DateChangeListener : Java.Lang.Object, CalendarView.IOnDateChangeListener
+        private class EventIndicatorDayViewDecorator : DayViewDecorator
         {
-            private readonly NativeCalendarView nativeCalendarView;
+            private readonly Color eventIndicatorColor;
 
-            public DateChangeListener(NativeCalendarView nativeCalendarView)
+            public EventIndicatorDayViewDecorator(Color eventIndicatorColor)
             {
-                this.nativeCalendarView = nativeCalendarView;
+                this.eventIndicatorColor = eventIndicatorColor;
             }
 
-            public void OnSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth)
+            public override int DescribeContents()
             {
-                // Handle the date change
-                this.nativeCalendarView.SelectedDate = new DateTime(year, month + 1, dayOfMonth);
+                throw new NotImplementedException();
+            }
+
+            public override Drawable? GetCompoundDrawableBottom(Context context, int year, int month, int day, bool valid, bool selected)
+            {
+                //return base.GetCompoundDrawableBottom(context, year, month, day, valid, selected);
+
+                // Draw circle
+                ShapeDrawable drawable = new ShapeDrawable(new OvalShape());
+                drawable.Paint.Color = eventIndicatorColor;
+                drawable.Paint.SetStyle(Paint.Style.Fill);
+                return drawable;
+            }
+
+            public override void WriteToParcel(Parcel? dest, [GeneratedEnum] ParcelableWriteFlags flags)
+            {
+                throw new NotImplementedException();
             }
         }
 

@@ -17,6 +17,5 @@ namespace Plugin.Maui.NativeCalendar.Extensions
         {
             return new DateTimeOffset(dateTime.Date).ToUnixTimeMilliseconds();
         }
-
     }
 }

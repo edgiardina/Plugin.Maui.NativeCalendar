@@ -82,5 +82,8 @@
 		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
 		<None Include="NativeCalendarHandler.android.cs" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Droid\" />
+	</ItemGroup>
 
 </Project>
