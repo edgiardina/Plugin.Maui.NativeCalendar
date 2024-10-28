@@ -84,11 +84,11 @@ namespace Plugin.Maui.NativeCalendar
             eventIndicatorDayViewDecorator = new EventIndicatorDayViewDecorator(nativeCalendarView);
 
             materialCalendarFragment = MaterialCalendar.NewInstance(DateSelector, 0, calendarConstraints, eventIndicatorDayViewDecorator);
-            
- 
+
+            // TODO: I don't know how to do the event listener for date change, so we are doing it in the DayDecorator, sorry.
             //materialCalendarFragment.AddOnSelectionChangedListener(new MaterialCalendarOnSelectionChangedListener(nativeCalendarView, materialCalendarFragment));
 
-            //materialCalendarFragment.DateSelector.
+            // Post MaterialCalendar fragment as actual view
             Post(() =>
             {
                 var transaction = Context.GetFragmentManager().BeginTransaction();
@@ -173,6 +173,12 @@ namespace Plugin.Maui.NativeCalendar
 
             public override Drawable? GetCompoundDrawableBottom(Context context, int year, int month, int day, bool valid, bool selected)
             {
+                // Since I can't figure out how to do event listeners on date change, just check here instead
+                if (selected)
+                {
+                    NativeCalendarView.SelectedDate = new DateTime(year, month + 1, day);
+                }
+
                 // Check if the current date has an event
                 if (NativeCalendarView.Events.Any(e => e.StartDate.Year == year && e.StartDate.Month == month + 1 && e.StartDate.Day == day))
                 {
