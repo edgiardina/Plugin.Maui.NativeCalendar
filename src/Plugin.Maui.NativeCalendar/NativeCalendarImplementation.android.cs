@@ -21,10 +21,10 @@ namespace Plugin.Maui.NativeCalendar
 {
     public class NativeCalendarImplementation : FrameLayout
     {
-
         private MaterialCalendar materialCalendarFragment;
         private SingleDateSelector DateSelector;
         private CalendarConstraints calendarConstraints;
+        private EventIndicatorDayViewDecorator eventIndicatorDayViewDecorator;
 
         private readonly NativeCalendarView nativeCalendarView;
 
@@ -39,7 +39,7 @@ namespace Plugin.Maui.NativeCalendar
 
         public void UpdateTintColor(NativeCalendarView nativeCalendarView)
         {
-            
+            // TODO: What to update on Android?
         }
 
         public void UpdateSelectedDate(NativeCalendarView nativeCalendarView)
@@ -61,7 +61,8 @@ namespace Plugin.Maui.NativeCalendar
 
         public void UpdateEvents(NativeCalendarView nativeCalendarView)
         {
-            
+            // TODO: force MaterialCalendar to redraw
+
         }
 
         private void GenerateCalendarFragmentAndRender()
@@ -78,9 +79,9 @@ namespace Plugin.Maui.NativeCalendar
             DateSelector = new SingleDateSelector();
 
             // create dayviewdecorator to add event indicators (small circles)
-            DayViewDecorator dayViewDecorator = new EventIndicatorDayViewDecorator(nativeCalendarView.EventIndicatorColor.ToPlatform());
+            eventIndicatorDayViewDecorator = new EventIndicatorDayViewDecorator(nativeCalendarView);
 
-            materialCalendarFragment = MaterialCalendar.NewInstance(DateSelector, 0, calendarConstraints, dayViewDecorator);
+            materialCalendarFragment = MaterialCalendar.NewInstance(DateSelector, 0, calendarConstraints, eventIndicatorDayViewDecorator);
  
             //materialCalendarFragment.AddOnSelectionChangedListener(new MaterialCalendarOnSelectionChangedListener(nativeCalendarView, materialCalendarFragment));
 
@@ -95,11 +96,12 @@ namespace Plugin.Maui.NativeCalendar
 
         private class EventIndicatorDayViewDecorator : DayViewDecorator
         {
-            private readonly Color eventIndicatorColor;
+            public NativeCalendarView NativeCalendarView;           
+      
 
-            public EventIndicatorDayViewDecorator(Color eventIndicatorColor)
+            public EventIndicatorDayViewDecorator(NativeCalendarView nativeCalendarView)
             {
-                this.eventIndicatorColor = eventIndicatorColor;
+                this.NativeCalendarView = nativeCalendarView;
             }
 
             public override int DescribeContents()
@@ -109,13 +111,21 @@ namespace Plugin.Maui.NativeCalendar
 
             public override Drawable? GetCompoundDrawableBottom(Context context, int year, int month, int day, bool valid, bool selected)
             {
-                //return base.GetCompoundDrawableBottom(context, year, month, day, valid, selected);
+                // Check if the current date has an event
+                if (NativeCalendarView.Events.Any(e => e.StartDate.Year == year && e.StartDate.Month == month + 1 && e.StartDate.Day == day))
+                {
+                    // Draw circle
+                    ShapeDrawable drawable = new ShapeDrawable(new OvalShape());
+                    drawable.Paint.Color = NativeCalendarView.EventIndicatorColor.ToPlatform();
+                    drawable.Paint.SetStyle(Paint.Style.Fill);
 
-                // Draw circle
-                ShapeDrawable drawable = new ShapeDrawable(new OvalShape());
-                drawable.Paint.Color = eventIndicatorColor;
-                drawable.Paint.SetStyle(Paint.Style.Fill);
-                return drawable;
+                    // Set the bounds of the drawable to make sure it appears within the calendar cell
+                    int size = 20; // You can adjust this size to control the size of the indicator circle
+                    drawable.SetBounds(0, 0, size, size);
+                    return drawable;
+                }
+
+                return base.GetCompoundDrawableTop(context, year, month, day, valid, selected);
             }
 
             public override void WriteToParcel(Parcel? dest, [GeneratedEnum] ParcelableWriteFlags flags)
