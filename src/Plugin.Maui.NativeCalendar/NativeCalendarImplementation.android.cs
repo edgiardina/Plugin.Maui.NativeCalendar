@@ -1,10 +1,12 @@
 ﻿using Android.Content;
+using Android.Content.Res;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
 using Android.OS;
 using Android.Runtime;
 using Android.Util;
+using Android.Views;
 using Android.Widget;
 using AndroidX.CoordinatorLayout.Widget;
 using Google.Android.Material.DatePicker;
@@ -82,6 +84,7 @@ namespace Plugin.Maui.NativeCalendar
             eventIndicatorDayViewDecorator = new EventIndicatorDayViewDecorator(nativeCalendarView);
 
             materialCalendarFragment = MaterialCalendar.NewInstance(DateSelector, 0, calendarConstraints, eventIndicatorDayViewDecorator);
+            
  
             //materialCalendarFragment.AddOnSelectionChangedListener(new MaterialCalendarOnSelectionChangedListener(nativeCalendarView, materialCalendarFragment));
 
@@ -92,7 +95,66 @@ namespace Plugin.Maui.NativeCalendar
                 transaction.Add(Id, materialCalendarFragment, "MaterialCalendar");
                 transaction.Commit();
             });
+
+            // Wait for the fragment to be fully created before adjusting alignment
+            PostDelayed(() =>
+            {
+                CenterCalendarText();
+
+                materialCalendarFragment.View.ViewTreeObserver.GlobalLayout += (sender, args) =>
+                {
+                    // Trigger centering logic after the layout is updated
+                    PostDelayed(() =>
+                    {
+                        CenterCalendarText();
+                    }, 100);
+                };
+            }, 500); // Delay in milliseconds to give time for fragment initialization
+
+
         }
+
+        private void CenterCalendarText()
+        {
+            if (materialCalendarFragment?.View is ViewGroup viewGroup)
+            {
+                for (int i = 0; i < viewGroup.ChildCount; i++)
+                {
+                    var child = viewGroup.GetChildAt(i);
+
+                    if (child is TextView textView)
+                    {
+                        // Center the text horizontally and vertically
+                        textView.Gravity = GravityFlags.Center;
+                    }
+                    else if (child is ViewGroup childGroup)
+                    {
+                        // If the child is a ViewGroup, iterate over its children
+                        CenterChildViews(childGroup);
+                    }
+                }
+            }
+        }
+
+        private void CenterChildViews(ViewGroup viewGroup)
+        {
+            for (int i = 0; i < viewGroup.ChildCount; i++)
+            {
+                var child = viewGroup.GetChildAt(i);
+
+                if (child is TextView textView)
+                {
+                    // Center the text horizontally and vertically
+                    textView.Gravity = GravityFlags.Center;
+                }
+                else if (child is ViewGroup childGroup)
+                {
+                    // If the child is a ViewGroup, iterate over its children
+                    CenterChildViews(childGroup);
+                }
+            }
+        }
+
 
         private class EventIndicatorDayViewDecorator : DayViewDecorator
         {
