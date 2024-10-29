@@ -24,6 +24,9 @@ namespace Plugin.Maui.NativeCalendar.Sample
         private Color eventIndicatorColor;
 
         [ObservableProperty]
+        private Color tintColor;
+
+        [ObservableProperty]
         private List<NativeCalendarEvent> events;
 
         private Random random = new Random();
@@ -34,6 +37,7 @@ namespace Plugin.Maui.NativeCalendar.Sample
             MinimumDate = DateTime.Now.AddYears(-1);
             SelectedDate = DateTime.Now.AddDays(1);
             EventIndicatorColor = Colors.Red;
+            TintColor = Colors.Green;
 
             Events = new List<NativeCalendarEvent>
             {
@@ -93,6 +97,12 @@ namespace Plugin.Maui.NativeCalendar.Sample
         public void ChangeSelectedDate()
         {
             SelectedDate = DateTime.Now.AddDays(random.Next(31));
+        }
+
+        [RelayCommand]
+        public void ChangeTintColor()
+        {
+            TintColor = Color.FromRgb(random.Next(256), random.Next(256), random.Next(256));
         }
 
     }
