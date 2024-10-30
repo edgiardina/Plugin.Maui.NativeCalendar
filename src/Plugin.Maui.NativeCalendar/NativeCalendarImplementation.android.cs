@@ -43,7 +43,7 @@ namespace Plugin.Maui.NativeCalendar
         }
 
         public void UpdateSelectedDate(NativeCalendarView nativeCalendarView)
-        {            
+        {
             // TODO: ensure we are inspecting the correct month.
             //GenerateCalendarFragmentAndRender();
             materialCalendarFragment?.DateSelector?.Select(nativeCalendarView.SelectedDate.ToLongInteger());
@@ -139,8 +139,6 @@ namespace Plugin.Maui.NativeCalendar
         {
             if (materialCalendarFragment?.View is ViewGroup viewGroup)
             {
-
-                
                 for (int i = 0; i < viewGroup.ChildCount; i++)
                 {
                     var child = viewGroup.GetChildAt(i);
@@ -257,7 +255,7 @@ namespace Plugin.Maui.NativeCalendar
                     return new ColorStateList(new int[][] { new int[] { Android.Resource.Attribute.StateSelected }, new int[] { } }, new int[] { drawable.Paint.Color, drawable.Paint.Color });
                 }
                 //else show same Tinted Color but 100% opaque
-                else if(selected)
+                else if (selected)
                 {
                     ShapeDrawable drawable = new ShapeDrawable(new OvalShape());
                     drawable.Paint.Color = NativeCalendarView.TintColor.ToPlatform();
