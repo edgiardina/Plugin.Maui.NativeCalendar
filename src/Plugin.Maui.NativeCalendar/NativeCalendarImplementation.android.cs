@@ -6,23 +6,17 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using AndroidX.Fragment.App;
 using Google.Android.Material.Button;
 using Google.Android.Material.DatePicker;
 using Microsoft.Maui.Platform;
 using Plugin.Maui.NativeCalendar.Extensions;
 using static Google.Android.Material.DatePicker.CalendarConstraints;
-using Button = Android.Widget.Button;
 using Color = Android.Graphics.Color;
-using ImageButton = Android.Widget.ImageButton;
 using Paint = Android.Graphics.Paint;
 using ShapeDrawable = Android.Graphics.Drawables.ShapeDrawable;
 
 namespace Plugin.Maui.NativeCalendar
 {
-    // TODO Center text
-    // TODO Month and Year Picker and Next/Prev buttons are inverse color
-
     public class NativeCalendarImplementation : FrameLayout
     {
         private const string FragmentTag = "MaterialCalendar";
@@ -102,7 +96,7 @@ namespace Plugin.Maui.NativeCalendar
 
                 materialCalendarFragment.View.ViewTreeObserver.GlobalLayout += (sender, args) =>
                 {
-                    // Trigger centering logic after the layout is updated
+                    // Trigger centering logic after the layout is updated, i.e. from navigating months.
                     Post(() =>
                     {
                         CenterCalendarText();
@@ -145,6 +139,8 @@ namespace Plugin.Maui.NativeCalendar
         {
             if (materialCalendarFragment?.View is ViewGroup viewGroup)
             {
+
+                
                 for (int i = 0; i < viewGroup.ChildCount; i++)
                 {
                     var child = viewGroup.GetChildAt(i);
@@ -192,19 +188,19 @@ namespace Plugin.Maui.NativeCalendar
 
                 navigationNextButton.BackgroundTintList = ColorStateList.ValueOf(Color.Transparent);
                 navigationNextButton.IconTint = ColorStateList.ValueOf(nativeCalendarView.TintColor.ToPlatform());
-                navigationNextButton.Gravity = GravityFlags.Center;
+                navigationNextButton.IconGravity = (int)Android.Views.TextAlignment.TextStart;
 
                 navigationPrevButton.BackgroundTintList = ColorStateList.ValueOf(Color.Transparent);
                 navigationPrevButton.IconTint = ColorStateList.ValueOf(nativeCalendarView.TintColor.ToPlatform());
-                navigationPrevButton.Gravity = GravityFlags.Center;
+                navigationPrevButton.IconGravity = (int)Android.Views.TextAlignment.TextStart;
 
                 selectorToggleButton.BackgroundTintList = ColorStateList.ValueOf(Color.Transparent);
                 selectorToggleButton.IconTint = ColorStateList.ValueOf(nativeCalendarView.TintColor.ToPlatform());
+                // TODO: text color should not be TintColor, it should be default text color for current theme
                 selectorToggleButton.SetTextColor(ColorStateList.ValueOf(nativeCalendarView.TintColor.ToPlatform()));
-                selectorToggleButton.Gravity = GravityFlags.Center;
+                selectorToggleButton.TextAlignment = Android.Views.TextAlignment.Center;
             }
         }
-
 
         private class EventIndicatorDayViewDecorator : DayViewDecorator
         {
