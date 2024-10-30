@@ -3,10 +3,14 @@
 
 `Plugin.Maui.NativeCalendar` provides the ability to implement native calendar functionality in your .NET MAUI app.
 
+iOS
 
-![iOS](https://raw.githubusercontent.com/edgiardina/Plugin.Maui.NativeCalendar/main/ios-example.png)
+<img src="https://raw.githubusercontent.com/edgiardina/Plugin.Maui.NativeCalendar/main/ios-example.png" width=200>
 
-![Android](https://raw.githubusercontent.com/edgiardina/Plugin.Maui.NativeCalendar/main/android-example.png)
+Android
+
+<img src="https://raw.githubusercontent.com/edgiardina/Plugin.Maui.NativeCalendar/main/android-example.png" width=200>
+
 
 ## Install Plugin
 
@@ -95,8 +99,6 @@ Occurs when Date is selected via user interaction.
 ##### `TintColor`
 
 Bindable property indicating the color of the current day and selected day on the calendar for iOS
-
-For android, the color of the current day and selected day is the primary color of the app, defined in the `colors.xml` file.
 
 ##### `EventIndicatorColor`
 
