@@ -100,7 +100,7 @@ For android, the color of the current day and selected day is the primary color 
 
 ##### `EventIndicatorColor`
 
-Color of the Event Indicator, a dot that appears below the date number indicating there is an event on that date. (Currently only works on iOS, check soon for an Android implementation)
+Color of the Event Indicator, a dot that appears below the date number indicating there is an event on that date. Currently only allows single date selection.
 
 ##### `MinimumDate`
 

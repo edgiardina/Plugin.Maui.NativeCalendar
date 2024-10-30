@@ -4,6 +4,7 @@ using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
 using Android.OS;
 using Android.Runtime;
+using Android.Util;
 using Android.Views;
 using Android.Widget;
 using Google.Android.Material.Button;
@@ -91,7 +92,6 @@ namespace Plugin.Maui.NativeCalendar
             // TODO: replace Center logic with real styles
             PostDelayed(() =>
             {
-                CenterCalendarText();
                 UpdateCalendarNavigationButtons();
 
                 materialCalendarFragment.View.ViewTreeObserver.GlobalLayout += (sender, args) =>
@@ -111,19 +111,18 @@ namespace Plugin.Maui.NativeCalendar
             Builder constraintsBuilder = new Builder();
             constraintsBuilder.SetOpenAt(nativeCalendarView.SelectedDate.ToLongInteger());
 
-            var dateValidatorMin = DateValidatorPointForward.From(nativeCalendarView.MinimumDate.ToLongInteger());
-            var dateValidatorMax = DateValidatorPointBackward.Before(nativeCalendarView.MaximumDate.ToLongInteger());
-
             var dateValidators = new List<IDateValidator>();
 
             if (nativeCalendarView.MinimumDate != DateTime.MinValue)
             {
+                var dateValidatorMin = DateValidatorPointForward.From(nativeCalendarView.MinimumDate.AddDays(-1).ToLongInteger());
                 dateValidators.Add(dateValidatorMin);
                 constraintsBuilder.SetStart(nativeCalendarView.MinimumDate.ToLongInteger());
             }
 
             if (nativeCalendarView.MaximumDate != DateTime.MaxValue)
             {
+                var dateValidatorMax = DateValidatorPointBackward.Before(nativeCalendarView.MaximumDate.AddDays(1).ToLongInteger());
                 dateValidators.Add(dateValidatorMax);
                 constraintsBuilder.SetEnd(nativeCalendarView.MaximumDate.ToLongInteger());
             }
@@ -194,8 +193,22 @@ namespace Plugin.Maui.NativeCalendar
 
                 selectorToggleButton.BackgroundTintList = ColorStateList.ValueOf(Color.Transparent);
                 selectorToggleButton.IconTint = ColorStateList.ValueOf(nativeCalendarView.TintColor.ToPlatform());
-                // TODO: text color should not be TintColor, it should be default text color for current theme
-                selectorToggleButton.SetTextColor(ColorStateList.ValueOf(nativeCalendarView.TintColor.ToPlatform()));
+
+                // Create a Label instance to get the current default text color
+                var label = new Microsoft.Maui.Controls.Label();
+                var textColor = label.TextColor;
+
+                if (textColor != null)
+                {
+                    var androidColor = textColor.ToPlatform();
+                    selectorToggleButton.SetTextColor(androidColor);
+                }
+                else
+                {
+                    // Fallback to black if the text color could not be determined
+                    selectorToggleButton.SetTextColor(Color.Black);
+                }
+
                 selectorToggleButton.TextAlignment = Android.Views.TextAlignment.Center;
             }
         }
@@ -211,7 +224,8 @@ namespace Plugin.Maui.NativeCalendar
 
             public override int DescribeContents()
             {
-                throw new NotImplementedException();
+                // TODO: do I need a real implementation?
+                return 0;
             }
 
             public override Drawable? GetCompoundDrawableBottom(Context context, int year, int month, int day, bool valid, bool selected)
@@ -235,6 +249,18 @@ namespace Plugin.Maui.NativeCalendar
                     drawable.SetBounds(0, 0, size, size);
                     return drawable;
                 }
+                else
+                {
+                    // draw number as expected but with transparent drawable
+                    ShapeDrawable drawable = new ShapeDrawable(new OvalShape());
+                    drawable.Paint.Color = Color.Transparent;
+                    drawable.Paint.SetStyle(Paint.Style.Fill);
+
+                    // Set the bounds of the drawable to make sure it appears within the calendar cell
+                    int size = 20; // You can adjust this size to control the size of the indicator circle
+                    drawable.SetBounds(0, 0, size, size);
+                    return drawable;
+                }
 
                 return base.GetCompoundDrawableTop(context, year, month, day, valid, selected);
             }
@@ -247,7 +273,7 @@ namespace Plugin.Maui.NativeCalendar
                     ShapeDrawable drawable = new ShapeDrawable(new OvalShape());
                     drawable.Paint.Color = NativeCalendarView.TintColor.ToPlatform();
                     drawable.Paint.SetStyle(Paint.Style.Fill);
-                    drawable.Paint.Alpha = 128;
+                    drawable.Paint.Alpha = 64;
 
                     // Set the bounds of the drawable to make sure it appears within the calendar cell
                     int size = 20; // You can adjust this size to control the size of the indicator circle
@@ -273,7 +299,7 @@ namespace Plugin.Maui.NativeCalendar
 
             public override void WriteToParcel(Parcel? dest, [GeneratedEnum] ParcelableWriteFlags flags)
             {
-                throw new NotImplementedException();
+                // TODO: do we need a parcelable implementation?
             }
         }
 
