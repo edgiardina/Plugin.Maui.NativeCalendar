@@ -29,7 +29,7 @@ Install with the dotnet CLI: `dotnet add package Plugin.Maui.NativeCalendar`, or
 
 The calendar view on iOS is implemented using `UICalendarView`.  NOTE: iOS requires a declared height for the NativeCalendarView to appear.
 
-The calendar view on Android is implemented using `CalendarView` from the Android Widgets library
+The calendar view on Android is implemented using `MaterialCalendar`, a class used in the MaterialDatePicker from the Android Material library
 
 ### Permissions
 

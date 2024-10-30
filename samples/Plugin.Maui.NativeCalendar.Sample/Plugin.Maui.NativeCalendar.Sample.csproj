@@ -59,4 +59,6 @@
 	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
 	  <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 	</ItemGroup>
+
+	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionPluginMauiNativeCalendarSampleHideInfoBar="True" /></VisualStudio></ProjectExtensions>
 </Project>
