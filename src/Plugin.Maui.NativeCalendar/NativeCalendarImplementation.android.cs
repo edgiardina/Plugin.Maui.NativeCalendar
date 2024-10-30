@@ -7,10 +7,12 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using AndroidX.Fragment.App;
+using Google.Android.Material.Button;
 using Google.Android.Material.DatePicker;
 using Microsoft.Maui.Platform;
 using Plugin.Maui.NativeCalendar.Extensions;
 using static Google.Android.Material.DatePicker.CalendarConstraints;
+using Button = Android.Widget.Button;
 using Color = Android.Graphics.Color;
 using ImageButton = Android.Widget.ImageButton;
 using Paint = Android.Graphics.Paint;
@@ -25,11 +27,11 @@ namespace Plugin.Maui.NativeCalendar
     {
         private const string FragmentTag = "MaterialCalendar";
 
-        private MaterialCalendar materialCalendarFragment;
-        private SingleDateSelector DateSelector;
-        private CalendarConstraints calendarConstraints;
-        private EventIndicatorDayViewDecorator eventIndicatorDayViewDecorator;
+        private const string NavigationNextTag = "NAVIGATION_NEXT_TAG";
+        private const string NavigationPrevTag = "NAVIGATION_PREV_TAG";
+        private const string SelectorToggleTag = "SELECTOR_TOGGLE_TAG";
 
+        private MaterialCalendar materialCalendarFragment;
         private readonly NativeCalendarView nativeCalendarView;
 
         public NativeCalendarImplementation(Context context, NativeCalendarView nativeCalendarView) : base(context)
@@ -47,10 +49,10 @@ namespace Plugin.Maui.NativeCalendar
         }
 
         public void UpdateSelectedDate(NativeCalendarView nativeCalendarView)
-        {
-            materialCalendarFragment?.DateSelector?.Select(nativeCalendarView.SelectedDate.ToLongInteger());
+        {            
             // TODO: ensure we are inspecting the correct month.
-            GenerateCalendarFragmentAndRender();
+            //GenerateCalendarFragmentAndRender();
+            materialCalendarFragment?.DateSelector?.Select(nativeCalendarView.SelectedDate.ToLongInteger());
         }
 
         public void UpdateMaximumDate(NativeCalendarView nativeCalendarView)
@@ -70,7 +72,48 @@ namespace Plugin.Maui.NativeCalendar
 
         private void GenerateCalendarFragmentAndRender()
         {
-            // Create a CalendarConstraints object to provide a valid date ran
+            var DateSelector = new SingleDateSelector();
+
+            // create dayviewdecorator to add event indicators (small circles)
+            var eventIndicatorDayViewDecorator = new EventIndicatorDayViewDecorator(nativeCalendarView);
+
+            //int customThemeResId = 
+
+            materialCalendarFragment = MaterialCalendar.NewInstance(DateSelector, 0, GenerateCalendarConstraints(), eventIndicatorDayViewDecorator);
+
+            // TODO: I don't know how to do the event listener for date change, so we are doing it in the DayDecorator, sorry.
+            //materialCalendarFragment.AddOnSelectionChangedListener(new MaterialCalendarOnSelectionChangedListener(nativeCalendarView, materialCalendarFragment));
+
+            // Post MaterialCalendar fragment as actual view
+            Post(() =>
+            {
+                Context.GetFragmentManager()
+                       .BeginTransaction()
+                       .Replace(Id, materialCalendarFragment, FragmentTag)
+                       .CommitNow();
+            });
+
+            // Wait for the fragment to be fully created before adjusting alignment
+            // TODO: replace Center logic with real styles
+            PostDelayed(() =>
+            {
+                CenterCalendarText();
+                UpdateCalendarNavigationButtons();
+
+                materialCalendarFragment.View.ViewTreeObserver.GlobalLayout += (sender, args) =>
+                {
+                    // Trigger centering logic after the layout is updated
+                    Post(() =>
+                    {
+                        CenterCalendarText();
+                    });
+                };
+            }, 25); // Delay in milliseconds to give time for fragment initialization
+        }
+
+        private CalendarConstraints GenerateCalendarConstraints()
+        {
+            // Create a CalendarConstraints object to provide a valid date range
             Builder constraintsBuilder = new Builder();
             constraintsBuilder.SetOpenAt(nativeCalendarView.SelectedDate.ToLongInteger());
 
@@ -95,41 +138,7 @@ namespace Plugin.Maui.NativeCalendar
 
             constraintsBuilder.SetValidator(compositeDateValidator);
 
-            calendarConstraints = constraintsBuilder.Build();
-
-            DateSelector = new SingleDateSelector();
-
-            // create dayviewdecorator to add event indicators (small circles)
-            eventIndicatorDayViewDecorator = new EventIndicatorDayViewDecorator(nativeCalendarView);
-
-            //int customThemeResId = Resource.Style.CustomMaterialCalendarTheme;
-
-            materialCalendarFragment = MaterialCalendar.NewInstance(DateSelector, 0, calendarConstraints, eventIndicatorDayViewDecorator);
-
-            // TODO: I don't know how to do the event listener for date change, so we are doing it in the DayDecorator, sorry.
-            //materialCalendarFragment.AddOnSelectionChangedListener(new MaterialCalendarOnSelectionChangedListener(nativeCalendarView, materialCalendarFragment));
-
-            // Post MaterialCalendar fragment as actual view
-            Post(() =>
-            {
-                Context.GetFragmentManager().BeginTransaction().Replace(Id, materialCalendarFragment, FragmentTag).CommitNow();
-            });
-
-            // Wait for the fragment to be fully created before adjusting alignment
-            // TODO: replace Center logic with real styles
-            PostDelayed(() =>
-            {
-                CenterCalendarText();
-
-                materialCalendarFragment.View.ViewTreeObserver.GlobalLayout += (sender, args) =>
-                {
-                    // Trigger centering logic after the layout is updated
-                    Post(() =>
-                    {
-                        CenterCalendarText();
-                    });
-                };
-            }, 25); // Delay in milliseconds to give time for fragment initialization
+            return constraintsBuilder.Build();
         }
 
         private void CenterCalendarText()
@@ -172,6 +181,30 @@ namespace Plugin.Maui.NativeCalendar
                 }
             }
         }
+
+        private void UpdateCalendarNavigationButtons()
+        {
+            if (materialCalendarFragment?.View is ViewGroup viewGroup)
+            {
+                var navigationNextButton = viewGroup.FindViewWithTag(NavigationNextTag) as MaterialButton;
+                var navigationPrevButton = viewGroup.FindViewWithTag(NavigationPrevTag) as MaterialButton;
+                var selectorToggleButton = viewGroup.FindViewWithTag(SelectorToggleTag) as MaterialButton;
+
+                navigationNextButton.BackgroundTintList = ColorStateList.ValueOf(Color.Transparent);
+                navigationNextButton.IconTint = ColorStateList.ValueOf(nativeCalendarView.TintColor.ToPlatform());
+                navigationNextButton.Gravity = GravityFlags.Center;
+
+                navigationPrevButton.BackgroundTintList = ColorStateList.ValueOf(Color.Transparent);
+                navigationPrevButton.IconTint = ColorStateList.ValueOf(nativeCalendarView.TintColor.ToPlatform());
+                navigationPrevButton.Gravity = GravityFlags.Center;
+
+                selectorToggleButton.BackgroundTintList = ColorStateList.ValueOf(Color.Transparent);
+                selectorToggleButton.IconTint = ColorStateList.ValueOf(nativeCalendarView.TintColor.ToPlatform());
+                selectorToggleButton.SetTextColor(ColorStateList.ValueOf(nativeCalendarView.TintColor.ToPlatform()));
+                selectorToggleButton.Gravity = GravityFlags.Center;
+            }
+        }
+
 
         private class EventIndicatorDayViewDecorator : DayViewDecorator
         {
