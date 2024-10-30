@@ -209,7 +209,7 @@ namespace Plugin.Maui.NativeCalendar
                     selectorToggleButton.SetTextColor(Color.Black);
                 }
 
-                selectorToggleButton.TextAlignment = Android.Views.TextAlignment.Center;
+                selectorToggleButton.SetPadding(40,0,0,0);
             }
         }
 
