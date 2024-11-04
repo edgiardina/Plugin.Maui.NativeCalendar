@@ -90,9 +90,15 @@ And then consume your calendar in the XAML page:
 
 #### Events
 
-##### `DateSelected`
+##### `DateChanged`
 
 Occurs when Date is selected via user interaction.
+
+#### Commands
+
+##### `DateChangedCommand`
+
+Command that is executed when Date is selected via user interaction.
 
 #### Properties
 
@@ -118,4 +124,4 @@ Date that is currently selected on the calendar.
 
 ##### `Events`
 
-List of dates that have events. The calendar will display a dot below the date number to indicate there is an event on that date. (iOS only)
+List of dates that have events. The calendar will display a dot below the date number to indicate there is an event on that date.
