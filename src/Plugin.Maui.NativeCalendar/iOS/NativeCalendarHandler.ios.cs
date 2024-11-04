@@ -1,10 +1,4 @@
 ﻿using Microsoft.Maui.Handlers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UIKit;
 
 namespace Plugin.Maui.NativeCalendar
 {
@@ -15,8 +9,6 @@ namespace Plugin.Maui.NativeCalendar
         protected override void ConnectHandler(NativeCalendarImplementation platformView)
         {
             base.ConnectHandler(platformView);
-
-            // Perform any control setup here
         }
 
         protected override void DisconnectHandler(NativeCalendarImplementation platformView)

@@ -4,7 +4,6 @@ using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
 using Android.OS;
 using Android.Runtime;
-using Android.Util;
 using Android.Views;
 using Android.Widget;
 using Google.Android.Material.Button;
@@ -195,7 +194,7 @@ namespace Plugin.Maui.NativeCalendar
                 selectorToggleButton.IconTint = ColorStateList.ValueOf(nativeCalendarView.TintColor.ToPlatform());
 
                 // Create a Label instance to get the current default text color
-                var label = new Microsoft.Maui.Controls.Label();
+                var label = new Label();
                 var textColor = label.TextColor;
 
                 if (textColor != null)
@@ -209,7 +208,7 @@ namespace Plugin.Maui.NativeCalendar
                     selectorToggleButton.SetTextColor(Color.Black);
                 }
 
-                selectorToggleButton.SetPadding(40,0,0,0);
+                selectorToggleButton.SetPadding(40, 0, 0, 0);
             }
         }
 
@@ -219,7 +218,7 @@ namespace Plugin.Maui.NativeCalendar
 
             public EventIndicatorDayViewDecorator(NativeCalendarView nativeCalendarView)
             {
-                this.NativeCalendarView = nativeCalendarView;
+                NativeCalendarView = nativeCalendarView;
             }
 
             public override int DescribeContents()
