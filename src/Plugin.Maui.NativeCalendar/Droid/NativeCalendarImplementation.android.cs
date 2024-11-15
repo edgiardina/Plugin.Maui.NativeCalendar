@@ -235,33 +235,28 @@ namespace Plugin.Maui.NativeCalendar
                     NativeCalendarView.SelectedDate = new DateTime(year, month + 1, day);
                 }
 
+                // setup the event indicator circle
+                int size = 20;
+                ShapeDrawable drawable = new ShapeDrawable(new OvalShape());
+                drawable.Paint.SetStyle(Paint.Style.Fill);
+                drawable.SetBounds(0, 0, size, size);            
+
                 // Check if the current date has an event
-                if (NativeCalendarView.Events.Any(e => e.StartDate.Year == year && e.StartDate.Month == month + 1 && e.StartDate.Day == day))
+                // if the event start date is the same as the current date, draw a circle
+                // if it isn't, but its less than the end date, draw a circle
+
+                if (NativeCalendarView.Events.Any(e => e.StartDate.Date <= new DateTime(year, month + 1, day) && e.EndDate.Date >= new DateTime(year, month + 1, day)))
                 {
                     // Draw circle
-                    ShapeDrawable drawable = new ShapeDrawable(new OvalShape());
-                    drawable.Paint.Color = NativeCalendarView.EventIndicatorColor.ToPlatform();
-                    drawable.Paint.SetStyle(Paint.Style.Fill);
-
-                    // Set the bounds of the drawable to make sure it appears within the calendar cell
-                    int size = 20; // You can adjust this size to control the size of the indicator circle
-                    drawable.SetBounds(0, 0, size, size);
-                    return drawable;
+                    drawable.Paint.Color = NativeCalendarView.EventIndicatorColor.ToPlatform();                    
                 }
                 else
                 {
                     // draw number as expected but with transparent drawable
-                    ShapeDrawable drawable = new ShapeDrawable(new OvalShape());
                     drawable.Paint.Color = Color.Transparent;
-                    drawable.Paint.SetStyle(Paint.Style.Fill);
-
-                    // Set the bounds of the drawable to make sure it appears within the calendar cell
-                    int size = 20; // You can adjust this size to control the size of the indicator circle
-                    drawable.SetBounds(0, 0, size, size);
-                    return drawable;
                 }
 
-                return base.GetCompoundDrawableTop(context, year, month, day, valid, selected);
+                return drawable;
             }
 
             public override ColorStateList? GetBackgroundColor(Context context, int year, int month, int day, bool valid, bool selected)
