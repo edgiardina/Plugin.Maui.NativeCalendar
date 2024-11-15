@@ -1,4 +1,6 @@
 ﻿using Foundation;
+using Microsoft.Extensions.Logging;
+using System.Linq;
 using UIKit;
 
 namespace Plugin.Maui.NativeCalendar.iOS
@@ -33,19 +35,10 @@ namespace Plugin.Maui.NativeCalendar.iOS
         }
 
         // Helper method to find an event for the given date
-        private NativeCalendarEvent FindEventForDate(NSDateComponents dateComponents)
+        private NativeCalendarEvent? FindEventForDate(NSDateComponents dateComponents)
         {
-            foreach (var calendarEvent in events)
-            {
-                if (calendarEvent.StartDate.Year == dateComponents.Year &&
-                    calendarEvent.StartDate.Month == dateComponents.Month &&
-                    calendarEvent.StartDate.Day == dateComponents.Day)
-                {
-                    return calendarEvent;
-                }
-            }
-
-            return null; // No matching event found
+            return events.FirstOrDefault(e => e.StartDate.Date <= new DateTime(dateComponents.Year.ToInt32(), dateComponents.Month.ToInt32(), dateComponents.Day.ToInt32())
+                                           && e.EndDate.Date >= new DateTime(dateComponents.Year.ToInt32(), dateComponents.Month.ToInt32(), dateComponents.Day.ToInt32()));
         }
     }
 }

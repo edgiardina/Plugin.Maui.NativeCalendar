@@ -45,7 +45,7 @@ namespace Plugin.Maui.NativeCalendar.Sample
                 {
                     Title = "Event 1",
                     Description = "Description 1",
-                    StartDate = DateTime.Now.AddDays(random.Next(31)),
+                    StartDate = DateTime.Now.AddDays(2),
                     EndDate = DateTime.Now.AddDays(2),
                     Location = "Location 1"
                 },
@@ -53,8 +53,8 @@ namespace Plugin.Maui.NativeCalendar.Sample
                 {
                     Title = "Event 2",
                     Description = "Description 2",
-                    StartDate = DateTime.Now.AddDays(random.Next(31)),
-                    EndDate = DateTime.Now.AddDays(4),
+                    StartDate = DateTime.Now.AddDays(4),
+                    EndDate = DateTime.Now.AddDays(6),
                     Location = "Location 2"
                 }
             };
@@ -63,22 +63,25 @@ namespace Plugin.Maui.NativeCalendar.Sample
         [RelayCommand]
         public void ChangeEvents()
         {
+            var random1 = random.Next(31);
+            var random2 = random.Next(31);
+
             Events = new List<NativeCalendarEvent>
             {
                 new NativeCalendarEvent
                 {
                     Title = "Event 3",
                     Description = "Description 3",
-                    StartDate = DateTime.Now.AddDays(random.Next(31)),
-                    EndDate = DateTime.Now.AddDays(6),
+                    StartDate = DateTime.Now.AddDays(random1),
+                    EndDate = DateTime.Now.AddDays(random1),
                     Location = "Location 3"
                 },
                 new NativeCalendarEvent
                 {
                     Title = "Event 4",
                     Description = "Description 4",
-                    StartDate = DateTime.Now.AddDays(random.Next(31)),
-                    EndDate = DateTime.Now.AddDays(8),
+                    StartDate = DateTime.Now.AddDays(random2),
+                    EndDate = DateTime.Now.AddDays(random2 + 2),
                     Location = "Location 4"
                 }
             };
