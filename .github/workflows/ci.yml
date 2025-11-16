@@ -15,5 +15,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+  
+    - name: Install .NET 10 SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Install MAUI workloads
+      run: dotnet workload install maui maui-android maui-ios maui-maccatalyst
+
     - name: Build
       run: dotnet build src\Plugin.Maui.NativeCalendar.sln -c Release
