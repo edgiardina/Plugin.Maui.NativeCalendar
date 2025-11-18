@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0-android;net8.0-ios;</TargetFrameworks>
+		<TargetFrameworks>net10.0-android;net10.0-ios;</TargetFrameworks>
 		<!-- 
 		net8.0-maccatalyst
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
@@ -56,8 +56,8 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\src\Plugin.Maui.NativeCalendar\Plugin.Maui.NativeCalendar.csproj" />
-	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
-	  <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+	  <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.10" />
 	</ItemGroup>
 
 	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionPluginMauiNativeCalendarSampleHideInfoBar="True" /></VisualStudio></ProjectExtensions>

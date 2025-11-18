@@ -44,9 +44,8 @@ namespace Plugin.Maui.NativeCalendar
 
         public void UpdateSelectedDate(NativeCalendarView nativeCalendarView)
         {
-            // TODO: ensure we are inspecting the correct month.
-            //GenerateCalendarFragmentAndRender();
-            materialCalendarFragment?.DateSelector?.Select(nativeCalendarView.SelectedDate.ToLongInteger());
+            // Regenerate the calendar fragment to update the displayed month, day, and year
+            GenerateCalendarFragmentAndRender();
         }
 
         public void UpdateMaximumDate(NativeCalendarView nativeCalendarView)

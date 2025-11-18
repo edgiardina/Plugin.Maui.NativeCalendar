@@ -14,6 +14,6 @@ public partial class MainPage : ContentPage
 
     private void NativeCalendarView_DateChanged(object sender, DateChangedEventArgs e)
     {
-        DisplayAlert("Date Changed", $"Old Date: {e.OldDate.ToShortDateString()} New Date: {e.NewDate.ToShortDateString()}", "OK");
+        DisplayAlertAsync("Date Changed", $"Old Date: {e.OldDate?.ToShortDateString()} New Date: {e.NewDate?.ToShortDateString()}", "OK");
     }
 }
