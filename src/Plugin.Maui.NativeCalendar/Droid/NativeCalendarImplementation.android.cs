@@ -296,5 +296,14 @@ namespace Plugin.Maui.NativeCalendar
             }
         }
 
+        protected override void OnVisibilityChanged(Android.Views.View changedView, [GeneratedEnum] Android.Views.ViewStates visibility)
+        {
+            base.OnVisibilityChanged(changedView, visibility);
+            if (visibility == Android.Views.ViewStates.Visible)
+            {
+                // Redraw the calendar when it becomes visible
+                GenerateCalendarFragmentAndRender();
+            }
+        }
     }
 }

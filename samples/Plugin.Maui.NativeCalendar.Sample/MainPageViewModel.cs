@@ -12,6 +12,9 @@ namespace Plugin.Maui.NativeCalendar.Sample
     public partial class MainPageViewModel : ObservableObject
     {
         [ObservableProperty]
+        private bool isCalendarVisible = true;
+
+        [ObservableProperty]
         private DateTime maximumDate;
 
         [ObservableProperty]
@@ -108,5 +111,10 @@ namespace Plugin.Maui.NativeCalendar.Sample
             TintColor = Color.FromRgb(random.Next(256), random.Next(256), random.Next(256));
         }
 
+        [RelayCommand]
+        public void ToggleCalendarVisibility()
+        {
+            IsCalendarVisible = !IsCalendarVisible;
+        }
     }
 }

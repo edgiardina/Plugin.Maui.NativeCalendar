@@ -5,23 +5,27 @@
              xmlns:nativecalendar="clr-namespace:Plugin.Maui.NativeCalendar;assembly=Plugin.Maui.NativeCalendar"
              Title="Native Calendar Plugin">
     <StackLayout Padding="10">
-        <nativecalendar:NativeCalendarView MaximumDate="{Binding MaximumDate}"
-                                           SelectedDate="{Binding SelectedDate}"
-                                           Events="{Binding Events}"
-                                           EventIndicatorColor="{Binding EventIndicatorColor}"
-                                           HeightRequest="500"
-                                           DateChanged="NativeCalendarView_DateChanged"
-                                           DateChangedCommand="{Binding DateChangedCommand}"
-                                           TintColor="{Binding TintColor}"
-                                           BackgroundColor="Transparent"
-                                           />
-
+        <Button Text="Toggle Calendar Visibility"
+                Command="{Binding ToggleCalendarVisibilityCommand}" />
+        <Grid>
+            <Grid.IsVisible>
+                <Binding Path="IsCalendarVisible" />
+            </Grid.IsVisible>
+            <nativecalendar:NativeCalendarView MaximumDate="{Binding MaximumDate}"
+                                               SelectedDate="{Binding SelectedDate}"
+                                               Events="{Binding Events}"
+                                               EventIndicatorColor="{Binding EventIndicatorColor}"
+                                               HeightRequest="500"
+                                               DateChanged="NativeCalendarView_DateChanged"
+                                               DateChangedCommand="{Binding DateChangedCommand}"
+                                               TintColor="{Binding TintColor}"
+                                               BackgroundColor="Transparent"
+                                               />
+        </Grid>
         <Button Text="Change Events"
                 Command="{Binding ChangeEventsCommand}"/>
-
         <Button Text="Change Selected Date Programmatically"
                 Command="{Binding ChangeSelectedDateCommand}"/>
-
         <Button Text="Change Tint Color"
                 Command="{Binding ChangeTintColorCommand}" />
     </StackLayout>
