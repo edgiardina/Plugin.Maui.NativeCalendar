@@ -97,6 +97,7 @@ And then consume your calendar in the XAML page:
 
 ```xml
 
+ <!-- HeightRequest is necessary on Android. On iOS the calendar sizes itself, so it is optional. -->
  <nativecalendar:NativeCalendarView MaximumDate="{Binding MaximumDate}"
                                            MinimumDate="{Binding MinimumDate}"
                                            SelectedDate="{Binding SelectedDate}"
