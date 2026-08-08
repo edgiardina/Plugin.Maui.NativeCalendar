@@ -28,6 +28,13 @@ namespace Plugin.Maui.NativeCalendar
         private MaterialCalendar materialCalendarFragment;
         private readonly NativeCalendarView nativeCalendarView;
 
+        private EventHandler globalLayoutHandler;
+        private ViewTreeObserver observedViewTreeObserver;
+        private bool isDisposed;
+
+        // The Java peer is gone once the handle is zero, even if Dispose has not run yet.
+        private bool IsDisposed => isDisposed || Handle == IntPtr.Zero;
+
         public NativeCalendarImplementation(Context context, NativeCalendarView nativeCalendarView) : base(context)
         {
             this.nativeCalendarView = nativeCalendarView;
@@ -66,12 +73,19 @@ namespace Plugin.Maui.NativeCalendar
 
         private void GenerateCalendarFragmentAndRender()
         {
+            if (IsDisposed)
+                return;
+
+            // Remove any handler left over from a previous render so listeners do not
+            // accumulate across visibility changes and cannot fire after this view is gone.
+            DetachGlobalLayoutListener();
+
             var DateSelector = new SingleDateSelector();
 
             // create dayviewdecorator to add event indicators (small circles)
             var eventIndicatorDayViewDecorator = new EventIndicatorDayViewDecorator(nativeCalendarView);
 
-            //int customThemeResId = 
+            //int customThemeResId =
 
             materialCalendarFragment = MaterialCalendar.NewInstance(DateSelector, 0, GenerateCalendarConstraints(), eventIndicatorDayViewDecorator);
 
@@ -81,6 +95,9 @@ namespace Plugin.Maui.NativeCalendar
             // Post MaterialCalendar fragment as actual view
             Post(() =>
             {
+                if (IsDisposed)
+                    return;
+
                 Context.GetFragmentManager()
                        .BeginTransaction()
                        .Replace(Id, materialCalendarFragment, FragmentTag)
@@ -91,17 +108,67 @@ namespace Plugin.Maui.NativeCalendar
             // TODO: replace Center logic with real styles
             PostDelayed(() =>
             {
+                if (IsDisposed || materialCalendarFragment?.View is null)
+                    return;
+
                 UpdateCalendarNavigationButtons();
 
-                materialCalendarFragment.View.ViewTreeObserver.GlobalLayout += (sender, args) =>
-                {
-                    // Trigger centering logic after the layout is updated, i.e. from navigating months.
-                    Post(() =>
-                    {
-                        CenterCalendarText();
-                    });
-                };
+                observedViewTreeObserver = materialCalendarFragment.View.ViewTreeObserver;
+                globalLayoutHandler = OnFragmentGlobalLayout;
+                observedViewTreeObserver.GlobalLayout += globalLayoutHandler;
             }, 25); // Delay in milliseconds to give time for fragment initialization
+        }
+
+        private void OnFragmentGlobalLayout(object sender, EventArgs args)
+        {
+            // The fragment's ViewTreeObserver can still fire after this native view has
+            // been disposed (e.g. after navigating away from the page), so guard against
+            // it to avoid ObjectDisposedException.
+            if (IsDisposed)
+                return;
+
+            // Trigger centering logic after the layout is updated, i.e. from navigating months.
+            Post(() =>
+            {
+                if (IsDisposed)
+                    return;
+
+                CenterCalendarText();
+            });
+        }
+
+        private void DetachGlobalLayoutListener()
+        {
+            if (globalLayoutHandler is null)
+                return;
+
+            try
+            {
+                if (observedViewTreeObserver is not null && observedViewTreeObserver.IsAlive)
+                {
+                    observedViewTreeObserver.GlobalLayout -= globalLayoutHandler;
+                }
+            }
+            catch (ObjectDisposedException)
+            {
+                // The observer was already torn down; nothing to detach.
+            }
+            finally
+            {
+                observedViewTreeObserver = null;
+                globalLayoutHandler = null;
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && !isDisposed)
+            {
+                isDisposed = true;
+                DetachGlobalLayoutListener();
+            }
+
+            base.Dispose(disposing);
         }
 
         private CalendarConstraints GenerateCalendarConstraints()
