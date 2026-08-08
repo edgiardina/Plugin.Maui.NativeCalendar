@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,13 +17,36 @@ namespace Plugin.Maui.NativeCalendar
             propertyName: nameof(Events),
             returnType: typeof(IEnumerable<NativeCalendarEvent>),
             declaringType: typeof(NativeCalendarView),
-            defaultValue: new ObservableCollection<NativeCalendarEvent>(),
-            defaultBindingMode: BindingMode.TwoWay
+            // A defaultValueCreator gives every instance its own collection. A plain
+            // defaultValue is a single shared instance across all NativeCalendarView objects.
+            defaultValueCreator: _ => new ObservableCollection<NativeCalendarEvent>(),
+            defaultBindingMode: BindingMode.OneWay,
+            propertyChanged: OnEventsPropertyChanged
         );
         public IEnumerable<NativeCalendarEvent> Events
         {
             get => (IEnumerable<NativeCalendarEvent>)GetValue(EventsProperty);
             set => SetValue(EventsProperty, value);
+        }
+
+        // Keep the platform view in sync when the bound collection itself is mutated
+        // (items added or removed), not only when the Events property is reassigned.
+        static void OnEventsPropertyChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            if (bindable is not NativeCalendarView view)
+                return;
+
+            if (oldValue is INotifyCollectionChanged oldObservable)
+                oldObservable.CollectionChanged -= view.OnEventsCollectionChanged;
+
+            if (newValue is INotifyCollectionChanged newObservable)
+                newObservable.CollectionChanged += view.OnEventsCollectionChanged;
+        }
+
+        void OnEventsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            // The Events reference did not change, so re-run the platform mapper by hand.
+            Handler?.UpdateValue(nameof(Events));
         }
 
         // Selected Date Bindable Property
