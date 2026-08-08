@@ -31,9 +31,27 @@ Install with the dotnet CLI: `dotnet add package Plugin.Maui.NativeCalendar`, or
 
 `Plugin.Maui.NativeCalendar` provides the `NativeCalendar` class that displays a native calendar view in your .NET MAUI app. 
 
-The calendar view on iOS is implemented using `UICalendarView`.  NOTE: iOS requires a declared height for the NativeCalendarView to appear.
+The calendar view on iOS is implemented using `UICalendarView`.
 
-The calendar view on Android is implemented using `MaterialCalendar`, a class used in the MaterialDatePicker from the Android Material library
+The calendar view on Android is implemented using `MaterialCalendar`, a class used in the MaterialDatePicker from the Android Material library.
+
+### Sizing
+
+- **iOS** reports an intrinsic size, so the calendar sizes itself. A `HeightRequest` is optional and only needed to override the natural height.
+- **Android** fills the height it is given but does not report an intrinsic height. The underlying `MaterialCalendar` is a fragment whose size is not known until it renders. Give the control a `HeightRequest`, or place it in a slot with a definite height, for example a `Grid` row with height `*` or `VerticalOptions="Fill"` inside a bounded container.
+
+### Platform feature matrix
+
+| Feature | iOS (`UICalendarView`) | Android (`MaterialCalendar`) |
+|---------|------------------------|------------------------------|
+| Single date selection | Yes | Yes |
+| Event indicator dots (`Events`, `EventIndicatorColor`) | Yes | Yes |
+| `TintColor` for today and selected day | Yes | Yes |
+| `MinimumDate` / `MaximumDate` | Yes | Yes |
+| Self-sizing without a `HeightRequest` | Yes | No, give it a height or a fill slot |
+| Minimum OS | iOS 16 | API 21 |
+
+The `Events` collection updates the calendar when the property is reassigned and when an `ObservableCollection` bound to it is changed in place.
 
 ### Permissions
 
@@ -79,6 +97,7 @@ And then consume your calendar in the XAML page:
 
 ```xml
 
+ <!-- HeightRequest is necessary on Android. On iOS the calendar sizes itself, so it is optional. -->
  <nativecalendar:NativeCalendarView MaximumDate="{Binding MaximumDate}"
                                            MinimumDate="{Binding MinimumDate}"
                                            SelectedDate="{Binding SelectedDate}"
@@ -114,7 +133,7 @@ Color of the Event Indicator, a dot that appears below the date number indicatin
 
 Lowest date that can be selected on the calendar.
 
-##### `MaxminumDate`
+##### `MaximumDate`
 
 Greatest date that can be selected on the calendar.
 

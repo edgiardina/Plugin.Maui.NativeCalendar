@@ -1,4 +1,5 @@
-﻿using Foundation;
+﻿using CoreGraphics;
+using Foundation;
 using MapKit;
 using Microsoft.Maui.Platform;
 using Plugin.Maui.NativeCalendar.iOS;
@@ -57,6 +58,17 @@ namespace Plugin.Maui.NativeCalendar
             }
 
             this.nativeCalendarView = nativeCalendarView;
+        }
+
+        // Report the calendar's natural size so MAUI can auto-size the control. Without this the
+        // wrapping UIView has no intrinsic content size, so the control collapses unless the caller
+        // sets an explicit HeightRequest. The height depends on the width, so honor the constraint.
+        public override CGSize SizeThatFits(CGSize size)
+        {
+            if (calendarView is not null)
+                return calendarView.SizeThatFits(size);
+
+            return base.SizeThatFits(size);
         }
 
         public void UpdateTintColor(NativeCalendarView nativeCalendarView)
