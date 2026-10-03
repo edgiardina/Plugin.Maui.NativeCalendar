@@ -51,7 +51,7 @@ The calendar sizes itself on iOS and Android. A `HeightRequest` is optional. Use
 | `TintColor` for today and selected day | Yes | Yes |
 | `MinimumDate` / `MaximumDate` | Yes | Yes |
 | Self-sizing without a `HeightRequest` | Yes | Yes |
-| Shows the month of `SelectedDate` when you set it in code | No | Yes |
+| Shows the month of `SelectedDate` when you set it in code | Yes | Yes |
 | Light and dark mode, also when the mode changes while the app runs | Yes | Yes |
 | Year picker from the month title | Yes | Yes |
 | Event titles in the screen reader description of a day | No | Yes |
