@@ -1,6 +1,5 @@
 ﻿using CoreGraphics;
 using Foundation;
-using MapKit;
 using Microsoft.Maui.Platform;
 using Plugin.Maui.NativeCalendar.iOS;
 using UIKit;
@@ -49,12 +48,12 @@ namespace Plugin.Maui.NativeCalendar
                     calendarView.BackgroundColor = nativeCalendarView.BackgroundColor.ToPlatform();
 
                 // Set the delegate for calendarView
-                calendarView.Delegate = new CalendarViewDelegate(nativeCalendarView.Events, nativeCalendarView.EventIndicatorColor.ToPlatform());
+                calendarView.Delegate = new CalendarViewDelegate(nativeCalendarView.Events, GetEventIndicatorColor(nativeCalendarView));
 
             }
             else
             {
-                throw new Exception("iOS 16.0 or later is required to use the NativeCalendarView");
+                throw new PlatformNotSupportedException("iOS 16.0 or later is required to use the NativeCalendarView");
             }
 
             this.nativeCalendarView = nativeCalendarView;
@@ -73,7 +72,20 @@ namespace Plugin.Maui.NativeCalendar
 
         public void UpdateTintColor(NativeCalendarView nativeCalendarView)
         {
-            calendarView.TintColor = nativeCalendarView.TintColor.ToPlatform();
+            // A null TintColor gives the calendar the tint of its parent view again.
+            calendarView.TintColor = nativeCalendarView.TintColor?.ToPlatform();
+
+            // The event indicator uses the tint when it has no color of its own.
+            if (nativeCalendarView.EventIndicatorColor is null)
+                UpdateEvents(nativeCalendarView);
+        }
+
+        private UIColor GetEventIndicatorColor(NativeCalendarView nativeCalendarView)
+        {
+            return nativeCalendarView.EventIndicatorColor?.ToPlatform()
+                ?? nativeCalendarView.TintColor?.ToPlatform()
+                ?? calendarView.TintColor
+                ?? UIColor.SystemBlue;
         }
 
         public void UpdateSelectedDate(NativeCalendarView nativeCalendarView)
@@ -97,30 +109,40 @@ namespace Plugin.Maui.NativeCalendar
 
         public void UpdateMaximumDate(NativeCalendarView nativeCalendarView)
         {
-            if (nativeCalendarView.MaximumDate != null && nativeCalendarView.MaximumDate != DateTime.MinValue)
-            {
-                if (nativeCalendarView.MaximumDate.Kind == DateTimeKind.Unspecified)
-                    nativeCalendarView.MaximumDate = DateTime.SpecifyKind(nativeCalendarView.MaximumDate, DateTimeKind.Local);
-
-                MaxDate = (NSDate)nativeCalendarView.MaximumDate;
-            }
-
-            // Update the maximum date of the CalendarView
-            calendarView.AvailableDateRange = new Foundation.NSDateInterval(MinDate, MaxDate);
+            UpdateAvailableDateRange(nativeCalendarView);
         }
 
         public void UpdateMinimumDate(NativeCalendarView nativeCalendarView)
         {
-            if (nativeCalendarView.MinimumDate != null && nativeCalendarView.MinimumDate != DateTime.MinValue)
-            {
-                if (nativeCalendarView.MinimumDate.Kind == DateTimeKind.Unspecified)
-                    nativeCalendarView.MinimumDate = DateTime.SpecifyKind(nativeCalendarView.MinimumDate, DateTimeKind.Local);
+            UpdateAvailableDateRange(nativeCalendarView);
+        }
 
-                MinDate = (NSDate)nativeCalendarView.MinimumDate;
-            }
+        private void UpdateAvailableDateRange(NativeCalendarView nativeCalendarView)
+        {
+            var minimumDate = nativeCalendarView.MinimumDate.Date;
+            var maximumDate = nativeCalendarView.MaximumDate.Date;
 
-            // Update the minimum date of the CalendarView
+            var hasMinimum = minimumDate > DateTime.MinValue.Date;
+            var hasMaximum = maximumDate < DateTime.MaxValue.Date;
+
+            // NSDateInterval throws when the start is after the end. An inverted range has no
+            // valid day, so show the calendar with no limits.
+            if (hasMinimum && hasMaximum && minimumDate > maximumDate)
+                hasMinimum = hasMaximum = false;
+
+            // The range runs from the first second of the minimum day to the last second of the
+            // maximum day, so that the two days are in the range.
+            MinDate = hasMinimum ? ToNSDate(minimumDate) : NSDate.DistantPast;
+            MaxDate = hasMaximum ? ToNSDate(maximumDate.AddDays(1).AddSeconds(-1)) : NSDate.DistantFuture;
+
             calendarView.AvailableDateRange = new Foundation.NSDateInterval(MinDate, MaxDate);
+        }
+
+        // The cast to NSDate throws for a DateTime with no kind. The dates of the calendar view
+        // are local days.
+        private static NSDate ToNSDate(DateTime dateTime)
+        {
+            return (NSDate)DateTime.SpecifyKind(dateTime, DateTimeKind.Local);
         }
 
         public void UpdateEvents(NativeCalendarView nativeCalendarView)
@@ -129,7 +151,7 @@ namespace Plugin.Maui.NativeCalendar
             calendarView.Delegate = null;
 
             // TODO: is this enough?
-            calendarView.Delegate = new CalendarViewDelegate(nativeCalendarView.Events, nativeCalendarView.EventIndicatorColor.ToPlatform());
+            calendarView.Delegate = new CalendarViewDelegate(nativeCalendarView.Events, GetEventIndicatorColor(nativeCalendarView));
 
             // Trigger a layout update to redraw the decorations
             calendarView.SetNeedsLayout();

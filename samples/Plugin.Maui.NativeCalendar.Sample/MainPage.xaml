@@ -1,32 +1,143 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Plugin.Maui.NativeCalendar.Sample.MainPage"
+             xmlns:local="clr-namespace:Plugin.Maui.NativeCalendar.Sample"
              xmlns:nativecalendar="clr-namespace:Plugin.Maui.NativeCalendar;assembly=Plugin.Maui.NativeCalendar"
-             Title="Native Calendar Plugin">
-    <StackLayout Padding="10">
-        <Button Text="Toggle Calendar Visibility"
-                Command="{Binding ToggleCalendarVisibilityCommand}" />
-        <Grid>
-            <Grid.IsVisible>
-                <Binding Path="IsCalendarVisible" />
-            </Grid.IsVisible>
-            <nativecalendar:NativeCalendarView MaximumDate="{Binding MaximumDate}"
-                                               SelectedDate="{Binding SelectedDate}"
-                                               Events="{Binding Events}"
-                                               EventIndicatorColor="{Binding EventIndicatorColor}"
-                                               HeightRequest="500"
-                                               DateChanged="NativeCalendarView_DateChanged"
-                                               DateChangedCommand="{Binding DateChangedCommand}"
-                                               TintColor="{Binding TintColor}"
-                                               BackgroundColor="Transparent"
-                                               />
-        </Grid>
-        <Button Text="Change Events"
-                Command="{Binding ChangeEventsCommand}"/>
-        <Button Text="Change Selected Date Programmatically"
-                Command="{Binding ChangeSelectedDateCommand}"/>
-        <Button Text="Change Tint Color"
-                Command="{Binding ChangeTintColorCommand}" />
-    </StackLayout>
+             x:DataType="local:MainPageViewModel"
+             BackgroundColor="{AppThemeBinding Light={StaticResource PageLight}, Dark={StaticResource PageDark}}"
+             Title="Native Calendar">
+    <ContentPage.Resources>
+        <Style x:Key="Card" TargetType="Border">
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" />
+            <Setter Property="StrokeThickness" Value="0" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 20" />
+            <Setter Property="Padding" Value="16" />
+        </Style>
+        <Style x:Key="Heading" TargetType="Label">
+            <Setter Property="FontFamily" Value="OpenSansSemibold" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="CharacterSpacing" Value="1" />
+            <Setter Property="TextTransform" Value="Uppercase" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource MutedLight}, Dark={StaticResource MutedDark}}" />
+        </Style>
+        <Style x:Key="Body" TargetType="Label">
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextLight}, Dark={StaticResource TextDark}}" />
+        </Style>
+        <Style x:Key="Muted" TargetType="Label">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource MutedLight}, Dark={StaticResource MutedDark}}" />
+        </Style>
+        <Style x:Key="Action" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ControlLight}, Dark={StaticResource ControlDark}}" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextLight}, Dark={StaticResource TextDark}}" />
+            <Setter Property="FontFamily" Value="OpenSansSemibold" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="HeightRequest" Value="46" />
+            <Setter Property="Padding" Value="8,0" />
+        </Style>
+        <Style x:Key="Swatch" TargetType="Border">
+            <Setter Property="WidthRequest" Value="40" />
+            <Setter Property="HeightRequest" Value="40" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 20" />
+            <Setter Property="StrokeThickness" Value="1.5" />
+            <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource DividerLight}, Dark={StaticResource DividerDark}}" />
+        </Style>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+
+            <!-- The calendar has no HeightRequest. It reports its own height on iOS and Android. -->
+            <Border Style="{StaticResource Card}" Padding="8" IsVisible="{Binding IsCalendarVisible}">
+                <nativecalendar:NativeCalendarView MinimumDate="{Binding MinimumDate}"
+                                                   MaximumDate="{Binding MaximumDate}"
+                                                   SelectedDate="{Binding SelectedDate}"
+                                                   Events="{Binding Events}"
+                                                   EventIndicatorColor="{Binding EventIndicatorColor}"
+                                                   TintColor="{Binding TintColor}"
+                                                   DateChangedCommand="{Binding DateChangedCommand}"
+                                                   BackgroundColor="Transparent" />
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Style="{StaticResource Heading}" Text="Selected day" />
+                    <Label Style="{StaticResource Body}" FontFamily="OpenSansSemibold" FontSize="22" Text="{Binding SelectedDateTitle}" />
+                    <Label Style="{StaticResource Muted}" Text="No events" IsVisible="{Binding HasNoSelectedDayEvents}" />
+                    <VerticalStackLayout Spacing="10" BindableLayout.ItemsSource="{Binding SelectedDayEvents}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="nativecalendar:NativeCalendarEvent">
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                                    <BoxView WidthRequest="4" CornerRadius="2" Color="{StaticResource Primary}" />
+                                    <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                        <Label Style="{StaticResource Body}" Text="{Binding Title}" />
+                                        <Label Style="{StaticResource Muted}" Text="{Binding Location}" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                    <Label Style="{StaticResource Muted}" Text="{Binding LastChange}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Style="{StaticResource Heading}" Text="Tint color" />
+                    <HorizontalStackLayout Spacing="10" BindableLayout.ItemsSource="{Binding ColorOptions}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="local:ColorOption">
+                                <Border Style="{StaticResource Swatch}" BackgroundColor="{Binding Swatch}" SemanticProperties.Description="{Binding Name}">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type local:MainPageViewModel}}, Path=SetTintCommand, x:DataType=local:MainPageViewModel}"
+                                                              CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
+                                    <Label Style="{StaticResource Muted}" FontSize="10" Text="{Binding Label}" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </HorizontalStackLayout>
+
+                    <Label Style="{StaticResource Heading}" Text="Event indicator color" Margin="0,4,0,0" />
+                    <HorizontalStackLayout Spacing="10" BindableLayout.ItemsSource="{Binding ColorOptions}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="local:ColorOption">
+                                <Border Style="{StaticResource Swatch}" BackgroundColor="{Binding Swatch}" SemanticProperties.Description="{Binding Name}">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type local:MainPageViewModel}}, Path=SetEventIndicatorCommand, x:DataType=local:MainPageViewModel}"
+                                                              CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
+                                    <Label Style="{StaticResource Muted}" FontSize="10" Text="{Binding Label}" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Style="{StaticResource Heading}" Text="Actions" />
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                        <Button Style="{StaticResource Action}" Text="Today" Command="{Binding SelectTodayCommand}" />
+                        <Button Style="{StaticResource Action}" Grid.Column="1" Text="Random day" Command="{Binding SelectRandomDayCommand}" />
+                        <Button Style="{StaticResource Action}" Grid.Row="1" Text="Shuffle events" Command="{Binding ShuffleEventsCommand}" />
+                        <Button Style="{StaticResource Action}" Grid.Row="1" Grid.Column="1" Text="Add event" Command="{Binding AddEventOnSelectedDayCommand}" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Style="{StaticResource Body}" Text="Limit to one year each way" VerticalOptions="Center" />
+                        <Switch Grid.Column="1" IsToggled="{Binding IsRangeLimited}" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Style="{StaticResource Body}" Text="Show calendar" VerticalOptions="Center" />
+                        <Switch Grid.Column="1" IsToggled="{Binding IsCalendarVisible}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
