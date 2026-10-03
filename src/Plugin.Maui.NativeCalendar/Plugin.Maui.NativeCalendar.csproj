@@ -17,7 +17,7 @@
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<Title>.NET MAUI Native Calendar Plugin</Title>
-		<Description>Plugin.Maui.Calendar provides the ability surface Native Calendar UI in your .NET MAUI App.</Description>
+		<Description>Plugin.Maui.NativeCalendar provides the ability to surface Native Calendar UI in your .NET MAUI App.</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<DebugType>portable</DebugType>
@@ -64,7 +64,6 @@
 	<ItemGroup>
 		<None Include="..\..\nuget.png" PackagePath="icon.png" Pack="true" />
 		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
-		<None Include="Droid\NativeCalendarHandler.android.cs" />
 	</ItemGroup>
 
 </Project>

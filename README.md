@@ -37,8 +37,10 @@ The calendar view on Android is implemented using `MaterialCalendar`, a class us
 
 ### Sizing
 
-- **iOS** reports an intrinsic size, so the calendar sizes itself. A `HeightRequest` is optional and only needed to override the natural height.
-- **Android** fills the height it is given but does not report an intrinsic height. The underlying `MaterialCalendar` is a fragment whose size is not known until it renders. Give the control a `HeightRequest`, or place it in a slot with a definite height, for example a `Grid` row with height `*` or `VerticalOptions="Fill"` inside a bounded container.
+The calendar sizes itself on iOS and Android. A `HeightRequest` is optional. Use it only to override the natural height.
+
+- **iOS** reports the intrinsic size of `UICalendarView`.
+- **Android** reports the height of the Material date picker calendar: the month navigation, the weekday names and six weeks. The height is the same for each month, so the layout does not move when the user changes the month.
 
 ### Platform feature matrix
 
@@ -48,10 +50,21 @@ The calendar view on Android is implemented using `MaterialCalendar`, a class us
 | Event indicator dots (`Events`, `EventIndicatorColor`) | Yes | Yes |
 | `TintColor` for today and selected day | Yes | Yes |
 | `MinimumDate` / `MaximumDate` | Yes | Yes |
-| Self-sizing without a `HeightRequest` | Yes | No, give it a height or a fill slot |
+| Self-sizing without a `HeightRequest` | Yes | Yes |
+| Shows the month of `SelectedDate` when you set it in code | No | Yes |
+| Light and dark mode, also when the mode changes while the app runs | Yes | Yes |
+| Year picker from the month title | Yes | Yes |
+| Event titles in the screen reader description of a day | No | Yes |
 | Minimum OS | iOS 16 | API 21 |
 
 The `Events` collection updates the calendar when the property is reassigned and when an `ObservableCollection` bound to it is changed in place.
+
+#### Android notes
+
+- The calendar uses the Material theme of the app. If `TintColor` is not set, the selected day uses `colorPrimary` of the theme.
+- `TintColor` changes the selected day, the number of today, and the navigation arrows. The ring around today and the year picker keep the colors of the theme.
+- The calendar does not support fragment state restore. Keep the default of .NET MAUI, where `AllowFragmentRestore` of the activity is `false`.
+- `MaterialCalendar` is a part of the Material library that Google does not document as public API. An update of the Material library can change it. Test the calendar when you update `Xamarin.Google.Android.Material` or .NET MAUI.
 
 ### Permissions
 
@@ -97,13 +110,11 @@ And then consume your calendar in the XAML page:
 
 ```xml
 
- <!-- HeightRequest is necessary on Android. On iOS the calendar sizes itself, so it is optional. -->
  <nativecalendar:NativeCalendarView MaximumDate="{Binding MaximumDate}"
                                            MinimumDate="{Binding MinimumDate}"
                                            SelectedDate="{Binding SelectedDate}"
                                            Events="{Binding Events}"
                                            EventIndicatorColor="{Binding EventIndicatorColor}"
-                                           HeightRequest="500"
                                            DateChanged="NativeCalendarView_DateChanged" />
 ```
 
@@ -111,36 +122,36 @@ And then consume your calendar in the XAML page:
 
 ##### `DateChanged`
 
-Occurs when Date is selected via user interaction.
+Occurs when `SelectedDate` changes. This includes a tap on a day and a change from code or from a binding.
 
 #### Commands
 
 ##### `DateChangedCommand`
 
-Command that is executed when Date is selected via user interaction.
+Command that is executed when `SelectedDate` changes. The parameter is the `DateChangedEventArgs`.
 
 #### Properties
 
 ##### `TintColor`
 
-Bindable property indicating the color of the current day and selected day on the calendar for iOS
+Color of the selected day and of today. The default is `null`, which uses the accent color of the platform: the tint color on iOS and `colorPrimary` of the app theme on Android.
 
 ##### `EventIndicatorColor`
 
-Color of the Event Indicator, a dot that appears below the date number indicating there is an event on that date. Currently only allows single date selection.
+Color of the Event Indicator, a dot that appears below the date number indicating there is an event on that date. The default is `null`, which uses the `TintColor`.
 
 ##### `MinimumDate`
 
-Lowest date that can be selected on the calendar.
+Lowest date that can be selected on the calendar. The date itself can be selected.
 
 ##### `MaximumDate`
 
-Greatest date that can be selected on the calendar.
+Greatest date that can be selected on the calendar. The date itself can be selected.
 
 ##### `SelectedDate`
 
-Date that is currently selected on the calendar.
+Date that is currently selected on the calendar. The calendar selects full days, so the time of day is removed. A date outside `MinimumDate` and `MaximumDate` moves to the nearest date in the range. The default is today.
 
 ##### `Events`
 
-List of dates that have events. The calendar will display a dot below the date number to indicate there is an event on that date.
+List of dates that have events. The calendar will display a dot below the date number to indicate there is an event on that date. An event shows on each day from its `StartDate` to its `EndDate`. An event with an `EndDate` before its `StartDate` shows on its `StartDate` only.

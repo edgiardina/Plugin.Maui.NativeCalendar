@@ -1,9 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Plugin.Maui.NativeCalendar.Extensions
 {
     public static class DateTimeExtensions
@@ -19,6 +13,16 @@ namespace Plugin.Maui.NativeCalendar.Extensions
         {
             var date = dateTime.Date;
             return new DateTimeOffset(date.Year, date.Month, date.Day, 0, 0, 0, TimeSpan.Zero).ToUnixTimeMilliseconds();
+        }
+
+        /// <summary>
+        /// The inverse of <see cref="ToLongInteger"/>. Returns the calendar day of a UTC
+        /// millisecond value, with no time of day and no time zone shift.
+        /// </summary>
+        internal static DateTime ToCalendarDate(this long utcMilliseconds)
+        {
+            var date = DateTimeOffset.FromUnixTimeMilliseconds(utcMilliseconds).UtcDateTime.Date;
+            return DateTime.SpecifyKind(date, DateTimeKind.Unspecified);
         }
     }
 }

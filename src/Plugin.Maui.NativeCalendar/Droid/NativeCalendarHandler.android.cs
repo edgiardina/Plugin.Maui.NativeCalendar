@@ -1,4 +1,4 @@
-﻿using Microsoft.Maui.Handlers;
+using Microsoft.Maui.Handlers;
 
 namespace Plugin.Maui.NativeCalendar
 {
@@ -6,15 +6,11 @@ namespace Plugin.Maui.NativeCalendar
     {
         protected override NativeCalendarImplementation CreatePlatformView() => new NativeCalendarImplementation(Context, VirtualView);
 
-        protected override void ConnectHandler(NativeCalendarImplementation platformView)
-        {
-            base.ConnectHandler(platformView);
-
-            // Perform any control setup here
-        }
         protected override void DisconnectHandler(NativeCalendarImplementation platformView)
         {
-            platformView.Dispose();
+            // Do not dispose the platform view here. Android can still call into it while it
+            // leaves the window, and a disposed peer throws ObjectDisposedException.
+            platformView.Disconnect();
             base.DisconnectHandler(platformView);
         }
     }

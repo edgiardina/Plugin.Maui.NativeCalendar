@@ -5,7 +5,7 @@
        xmlns:pages="clr-namespace:Plugin.Maui.NativeCalendar.Sample"
        Shell.FlyoutBehavior="Disabled">
 
-    <ShellContent Title="Native Calendar Plugin"
+    <ShellContent Title="Native Calendar"
                   ContentTemplate="{DataTemplate pages:MainPage}" />
 
 </Shell>

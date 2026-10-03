@@ -1,18 +1,38 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace Plugin.Maui.NativeCalendar.Sample
 {
+    /// <summary>
+    /// A color choice in the sample. A null <see cref="Color"/> is the platform default.
+    /// </summary>
+    public record ColorOption(string Name, Color Color)
+    {
+        public Color Swatch => Color ?? Colors.Transparent;
+        public string Label => Color is null ? "Auto" : string.Empty;
+    }
+
     public partial class MainPageViewModel : ObservableObject
     {
+        private static readonly string[] EventTitles =
+        {
+            "Team standup", "Dentist", "Lunch with Sam", "Flight to Lisbon",
+            "Gym", "Book club", "Release day", "Design review"
+        };
+
+        private static readonly string[] EventLocations =
+        {
+            "Room 4B", "Main Street", "Cafe Aurora", "Terminal 2", "Downtown", "Library", "Online", "Studio"
+        };
+
+        private readonly Random random = new Random();
+
         [ObservableProperty]
         private bool isCalendarVisible = true;
+
+        [ObservableProperty]
+        private bool isRangeLimited = true;
 
         [ObservableProperty]
         private DateTime maximumDate;
@@ -30,91 +50,133 @@ namespace Plugin.Maui.NativeCalendar.Sample
         private Color tintColor;
 
         [ObservableProperty]
-        private List<NativeCalendarEvent> events;
+        private string selectedDateTitle;
 
-        private Random random = new Random();
+        [ObservableProperty]
+        private string lastChange = "Tap a day, or use the actions below.";
+
+        [ObservableProperty]
+        private bool hasNoSelectedDayEvents;
+
+        // The calendar watches this collection, so changes in place show up without a new binding.
+        public ObservableCollection<NativeCalendarEvent> Events { get; } = new();
+
+        public ObservableCollection<NativeCalendarEvent> SelectedDayEvents { get; } = new();
+
+        public IReadOnlyList<ColorOption> ColorOptions { get; } = new[]
+        {
+            new ColorOption("Auto", null),
+            new ColorOption("Blue", Color.FromArgb("#3B6FF5")),
+            new ColorOption("Green", Color.FromArgb("#1E9E6A")),
+            new ColorOption("Orange", Color.FromArgb("#F08A24")),
+            new ColorOption("Pink", Color.FromArgb("#E0458B")),
+            new ColorOption("Purple", Color.FromArgb("#8B5CF6")),
+        };
 
         public MainPageViewModel()
         {
-            MaximumDate = DateTime.Now.AddYears(1);
-            MinimumDate = DateTime.Now.AddYears(-1);
-            SelectedDate = DateTime.Now.AddDays(1);
-            EventIndicatorColor = Colors.Red;
-            TintColor = Colors.Green;
+            ApplyRange();
 
-            Events = new List<NativeCalendarEvent>
-            {
-                new NativeCalendarEvent
-                {
-                    Title = "Event 1",
-                    Description = "Description 1",
-                    StartDate = DateTime.Now.AddDays(2),
-                    EndDate = DateTime.Now.AddDays(2),
-                    Location = "Location 1"
-                },
-                new NativeCalendarEvent
-                {
-                    Title = "Event 2",
-                    Description = "Description 2",
-                    StartDate = DateTime.Now.AddDays(4),
-                    EndDate = DateTime.Now.AddDays(6),
-                    Location = "Location 2"
-                }
-            };
+            AddEvent("Team standup", "Room 4B", DateTime.Today.AddDays(2), DateTime.Today.AddDays(2));
+            AddEvent("Flight to Lisbon", "Terminal 2", DateTime.Today.AddDays(4), DateTime.Today.AddDays(6));
+            AddEvent("Book club", "Library", DateTime.Today.AddDays(6), DateTime.Today.AddDays(6));
+            AddEvent("Release day", "Online", DateTime.Today.AddDays(12), DateTime.Today.AddDays(12));
+
+            SelectedDate = DateTime.Today.AddDays(4);
         }
 
-        [RelayCommand]
-        public void ChangeEvents()
+        partial void OnSelectedDateChanged(DateTime value)
         {
-            var random1 = random.Next(31);
-            var random2 = random.Next(31);
+            RefreshSelectedDay();
+        }
 
-            Events = new List<NativeCalendarEvent>
-            {
-                new NativeCalendarEvent
-                {
-                    Title = "Event 3",
-                    Description = "Description 3",
-                    StartDate = DateTime.Now.AddDays(random1),
-                    EndDate = DateTime.Now.AddDays(random1),
-                    Location = "Location 3"
-                },
-                new NativeCalendarEvent
-                {
-                    Title = "Event 4",
-                    Description = "Description 4",
-                    StartDate = DateTime.Now.AddDays(random2),
-                    EndDate = DateTime.Now.AddDays(random2 + 2),
-                    Location = "Location 4"
-                }
-            };
-
-            // Randomize the EventIndicatorColor
-            EventIndicatorColor = Color.FromRgb(random.Next(256), random.Next(256), random.Next(256));
+        partial void OnIsRangeLimitedChanged(bool value)
+        {
+            ApplyRange();
         }
 
         [RelayCommand]
         public void DateChanged(DateChangedEventArgs dateChangedEventArgs)
         {
-            Console.WriteLine($"Selected Date: {dateChangedEventArgs.NewDate}");
+            LastChange = $"DateChanged: {dateChangedEventArgs.OldDate:MMM d} to {dateChangedEventArgs.NewDate:MMM d}";
         }
 
         [RelayCommand]
-        public void ChangeSelectedDate()
+        public void SelectToday()
         {
-            SelectedDate = DateTime.Now.AddDays(random.Next(31));
+            SelectedDate = DateTime.Today;
         }
 
         [RelayCommand]
-        public void ChangeTintColor()
+        public void SelectRandomDay()
         {
-            TintColor = Color.FromRgb(random.Next(256), random.Next(256), random.Next(256));
+            SelectedDate = DateTime.Today.AddDays(random.Next(-90, 91));
         }
 
         [RelayCommand]
-        public void ToggleCalendarVisibility()
+        public void ShuffleEvents()
         {
-            IsCalendarVisible = !IsCalendarVisible;
+            Events.Clear();
+
+            for (int i = 0; i < 8; i++)
+            {
+                var start = DateTime.Today.AddDays(random.Next(-20, 45));
+                var index = random.Next(EventTitles.Length);
+
+                AddEvent(EventTitles[index], EventLocations[index], start, start.AddDays(random.Next(0, 3)));
+            }
+
+            RefreshSelectedDay();
+        }
+
+        [RelayCommand]
+        public void AddEventOnSelectedDay()
+        {
+            var index = random.Next(EventTitles.Length);
+
+            AddEvent(EventTitles[index], EventLocations[index], SelectedDate, SelectedDate);
+            RefreshSelectedDay();
+        }
+
+        [RelayCommand]
+        public void SetTint(ColorOption option)
+        {
+            TintColor = option?.Color;
+        }
+
+        [RelayCommand]
+        public void SetEventIndicator(ColorOption option)
+        {
+            EventIndicatorColor = option?.Color;
+        }
+
+        private void AddEvent(string title, string location, DateTime start, DateTime end)
+        {
+            Events.Add(new NativeCalendarEvent
+            {
+                Title = title,
+                Location = location,
+                StartDate = start,
+                EndDate = end
+            });
+        }
+
+        private void ApplyRange()
+        {
+            MinimumDate = IsRangeLimited ? DateTime.Today.AddYears(-1) : DateTime.MinValue;
+            MaximumDate = IsRangeLimited ? DateTime.Today.AddYears(1) : DateTime.MaxValue;
+        }
+
+        private void RefreshSelectedDay()
+        {
+            SelectedDateTitle = SelectedDate.ToString("dddd, MMMM d");
+
+            SelectedDayEvents.Clear();
+
+            foreach (var calendarEvent in Events.Where(e => e.StartDate.Date <= SelectedDate.Date && e.EndDate.Date >= SelectedDate.Date))
+                SelectedDayEvents.Add(calendarEvent);
+
+            HasNoSelectedDayEvents = SelectedDayEvents.Count == 0;
         }
     }
 }
